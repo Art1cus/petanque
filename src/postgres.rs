@@ -1,17 +1,5 @@
 use deadpool_postgres::{Config, Pool};
 use tokio_postgres::NoTls;
-use tokio_postgres_migration::Migration;
-
-const SCRIPTS_UP: [(&str, &str); 2] = [
-    (
-        "0001_create-users",
-        include_str!("../migrations/0001_create-users_up.sql"),
-    ),
-    (
-        "0002_add-root-user-to-users",
-        include_str!("../migrations/0002_add-root-user-to-users_up.sql"),
-    ),
-];
 
 fn create_config() -> Config {
     let mut cfg = Config::new();
@@ -34,13 +22,4 @@ pub fn create_pool() -> Pool {
     create_config()
         .create_pool(NoTls)
         .expect("couldn't create postgres pool")
-}
-
-pub async fn migrate_up(pool: &Pool) {
-    let mut client = pool.get().await.expect("couldn't get postgres client");
-    let migration = Migration::new("migrations".to_string());
-    migration
-        .up(&mut **client, &SCRIPTS_UP)
-        .await
-        .expect("couldn't run migrations");
 }

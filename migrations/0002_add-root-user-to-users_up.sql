@@ -1,1 +1,1 @@
-INSERT INTO users (login) VALUES ('root');
+INSERT INTO users (login, points) VALUES ('root', '5');

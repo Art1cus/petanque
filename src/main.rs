@@ -1,26 +1,12 @@
-use actix_web::{get, web, App, HttpResponse, HttpServer};
-use deadpool_postgres::Pool;
+mod routes;
+mod models;
+
+use actix_web::{web, App, HttpServer};
+use actix_cors::Cors;
+
+use crate::routes::config::config;
 
 mod postgres;
-mod user;
-
-#[get("/users")]
-async fn list_users(pool: web::Data<Pool>) -> HttpResponse {
-    let client = match pool.get().await {
-        Ok(client) => client,
-        Err(err) => {
-            log::debug!("unable to get postgres client: {:?}", err);
-            return HttpResponse::InternalServerError().json("unable to get postgres client");
-        }
-    };
-    match user::User::all(&**client).await {
-        Ok(list) => HttpResponse::Ok().json(list),
-        Err(err) => {
-            log::debug!("unable to fetch users: {:?}", err);
-            return HttpResponse::InternalServerError().json("unable to fetch users");
-        }
-    }
-}
 
 fn address() -> String {
     std::env::var("ADDRESS").unwrap_or_else(|_| "127.0.0.1:8000".into())
@@ -31,14 +17,19 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     let pg_pool = postgres::create_pool();
-    postgres::migrate_up(&pg_pool).await;
 
     let address = address();
     HttpServer::new(move || {
+        let cors = Cors::default() // You can customize CORS options here
+            .allowed_origin("http://127.0.0.1:8080") // Whitelist allowed origins
+            .allowed_methods(vec!["GET", "POST"]) // Whitelist allowed HTTP methods
+            .max_age(3600);
+
         App::new()
+            .wrap(cors)
             .app_data(web::Data::new(pg_pool.clone()))
-            .service(list_users)
-    })
+            .configure( config)    
+        })
     .bind(&address)?
     .run()
     .await
