@@ -26,9 +26,9 @@ impl Round {
         let rows = client.query(&stmt, &[]).await?;
         Ok(rows.into_iter().map(Round::from).collect())
     }
-    pub async fn by_id<C: GenericClient>(client: &C, round_id: i32) -> Result<Vec<Round>, Error> {
-        let stmt = client.prepare("SELECT round_id, round_name, start_date, end_date FROM rounds WHERE round_id = $1").await?;
-        let rows = client.query(&stmt, &[&round_id]).await?;
-        Ok(rows.into_iter().map(Round::from).collect())
-    } 
+//     pub async fn by_id<C: GenericClient>(client: &C, round_id: i32) -> Result<Vec<Round>, Error> {
+//         let stmt = client.prepare("SELECT round_id, round_name, start_date, end_date FROM rounds WHERE round_id = $1").await?;
+//         let rows = client.query(&stmt, &[&round_id]).await?;
+//         Ok(rows.into_iter().map(Round::from).collect())
+//     } 
 }

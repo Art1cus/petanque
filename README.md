@@ -1,2 +1,3 @@
-# petanque
-Fullstack rust web app for a petanque tournament
+# petanque backend
+
+Fullstack rust web app for a petanque tournament.
