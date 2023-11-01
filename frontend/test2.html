@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petanque Tournament Score Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .team {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .team label {
+            font-weight: bold;
+        }
+
+        .team input {
+            width: 40%;
+            text-align: center;
+            padding: 5px;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        #score {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        .match-list {
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+        }
+
+        .match-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .match-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Petanque Tournament Score Tracker</h1>
+    </header>
+    <div class="container">
+        <div class="team">
+            <label for="team1">Team 1:</label>
+            <input type="number" id="team1" value="0">
+        </div>
+        <div class="team">
+            <label for="team2">Team 2:</label>
+            <input type="number" id="team2" value="0">
+        </div>
+        <button onclick="updateScore()">Add Points</button>
+        <p id="score">Total Score: 0</p>
+
+        <div class="match-list">
+            <div class="match-item" onclick="selectMatch(1)">
+                <span>Match 1: Team A vs. Team B</span>
+            </div>
+            <div class="match-item" onclick="selectMatch(2)">
+                <span>Match 2: Team C vs. Team D</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedMatch = null;
+
+        function updateScore() {
+            const team1Score = parseInt(document.getElementById('team1').value);
+            const team2Score = parseInt(document.getElementById('team2').value);
+            const totalScore = team1Score + team2Score;
+
+            document.getElementById('score').textContent = `Total Score: ${totalScore}`;
+
+            if (selectedMatch) {
+                // Here, you can update the score for the selected match.
+                console.log(`Updated score for ${selectedMatch}: ${team1Score} - ${team2Score}`);
+            }
+        }
+
+        function selectMatch(matchNumber) {
+            selectedMatch = matchNumber;
+            alert(`Selected Match ${matchNumber}`);
+        }
+    </script>
+</body>
+</html>
+    
