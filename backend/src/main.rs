@@ -21,14 +21,15 @@ async fn main() -> std::io::Result<()> {
     let address = address();
     HttpServer::new(move || {
         let cors = Cors::default() // You can customize CORS options here
-            .allowed_origin("http://127.0.0.1:8080") // Whitelist allowed origins
+            .allow_any_header() // Whitelist everything
+            .allowed_origin("http://localhost:8080")
             .allowed_methods(vec!["GET", "POST"]) // Whitelist allowed HTTP methods
             .max_age(3600);
 
         App::new()
             .wrap(cors)
             .app_data(web::Data::new(pg_pool.clone()))
-            .configure( config)    
+            .configure(config)    
         })
     .bind(&address)?
     .run()

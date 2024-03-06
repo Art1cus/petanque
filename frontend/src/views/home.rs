@@ -1,6 +1,6 @@
 use gloo_net::http::{Headers, Request};
 use serde::{Deserialize, Serialize};
-use serde_json;
+use serde_json::{self, Value};
 use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
 
@@ -60,7 +60,7 @@ pub fn home() -> Html {
             log::info!("registration_form {:?}", &registration_form);
 
             wasm_bindgen_futures::spawn_local(async move {
-                let post_request = Request::post("http://127.0.0.1:8000/test")
+                let post_request = Request::get("http://127.0.0.1:8000/api/teams")
                     .headers({
                         let headers = Headers::new();
                         headers.append("Access-Control-Allow-Origin", "*");
@@ -69,14 +69,23 @@ pub fn home() -> Html {
                         headers.append("Content-Type", "application/json");
                         headers
                     })
-                    .body(JsValue::from(
-                        serde_json::to_string(&registration_form).unwrap(),
-                    ))
                     .send()
                     .await
                     .unwrap();
+                
+                let body: Value = post_request.json().await.unwrap();
 
-                log::info!("post_request {:?}", &post_request);
+                log::info!("Response {:?}", &post_request);
+                
+                for team in body.as_array().unwrap() {
+                    let id = team["id"].as_u64().unwrap();
+                    let name = team["name"].as_str().unwrap();
+                    let captain_name = team["captain_name"].as_str().unwrap();
+                    let contact_email = team["contact_email"].as_str().unwrap();
+            
+                    log::info!("Team: id: {}, name: {}, captain_name: {}, contact_email: {}", id, name, captain_name, contact_email);
+                }
+
             });
         })
     };

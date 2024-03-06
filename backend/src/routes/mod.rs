@@ -3,3 +3,4 @@ pub mod team;
 pub mod round;
 pub mod game;
 pub mod field;
+pub mod score;
