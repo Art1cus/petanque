@@ -17,14 +17,21 @@ impl From<Row> for Field {
 }
 
 impl Field {
-    pub async fn all<C: GenericClient>(client: &C) -> Result<Vec<Field>, Error> {
+    pub async fn all<C: GenericClient>(client: &C) -> Result<FieldList, Error> {
         let stmt = client.prepare("SELECT field_id, field_name FROM fields").await?;
         let rows = client.query(&stmt, &[]).await?;
-        Ok(rows.into_iter().map(Field::from).collect())
+        let fields: Vec<Field> = rows.into_iter().map(Field::from).collect();
+        Ok(FieldList { fields })
     }
-    pub async fn by_id<C: GenericClient>(client: &C, field_id: i32) -> Result<Vec<Field>, Error> {
+    pub async fn by_id<C: GenericClient>(client: &C, field_id: i32) -> Result<FieldList, Error> {
         let stmt = client.prepare("SELECT field_id, field_name FROM fields WHERE field_id = $1").await?;
         let rows = client.query(&stmt, &[&field_id]).await?;
-        Ok(rows.into_iter().map(Field::from).collect())
+        let fields: Vec<Field> = rows.into_iter().map(Field::from).collect();
+        Ok(FieldList { fields })
     } 
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct FieldList {
+    pub fields: Vec<Field>,
 }

@@ -25,29 +25,39 @@ impl From<Row> for Game {
 }
 
 impl Game {
-    pub async fn all<C: GenericClient>(client: &C) -> Result<Vec<Game>, Error> {
+    pub async fn all<C: GenericClient>(client: &C) -> Result<GameList, Error> {
         let stmt = client.prepare("SELECT match_id, field_id, round_id, played, start_datetime, end_datetime FROM matches").await?;
         let rows = client.query(&stmt, &[]).await?;
-        Ok(rows.into_iter().map(Game::from).collect())
+        let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
+        Ok(GameList { games })
     }
-    pub async fn by_field_id<C: GenericClient>(client: &C, field_id: i32) -> Result<Vec<Game>, Error> {
+    pub async fn by_field_id<C: GenericClient>(client: &C, field_id: i32) -> Result<GameList, Error> {
         let stmt = client.prepare("SELECT match_id, field_id, round_id, played, start_datetime, end_datetime FROM matches WHERE field_id = $1").await?;
         let rows = client.query(&stmt, &[&field_id]).await?;
-        Ok(rows.into_iter().map(Game::from).collect())
+        let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
+        Ok(GameList { games })
     } 
-    pub async fn by_round_id<C: GenericClient>(client: &C, round_id: i32) -> Result<Vec<Game>, Error> {
+    pub async fn by_round_id<C: GenericClient>(client: &C, round_id: i32) -> Result<GameList, Error> {
         let stmt = client.prepare("SELECT match_id, field_id, round_id, played, start_datetime, end_datetime FROM matches WHERE round_id = $1").await?;
         let rows = client.query(&stmt, &[&round_id]).await?;
-        Ok(rows.into_iter().map(Game::from).collect())
+        let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
+        Ok(GameList { games })
     } 
-    pub async fn by_is_played<C: GenericClient>(client: &C, played: bool) -> Result<Vec<Game>, Error> {
+    pub async fn by_is_played<C: GenericClient>(client: &C, played: bool) -> Result<GameList, Error> {
         let stmt = client.prepare("SELECT match_id, field_id, round_id, played, start_datetime, end_datetime FROM matches WHERE played = $1").await?;
         let rows = client.query(&stmt, &[&played]).await?;
-        Ok(rows.into_iter().map(Game::from).collect())
+        let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
+        Ok(GameList { games })
     } 
-    pub async fn by_field_round_id<C: GenericClient>(client: &C, field_id: i32, round_id: i32) -> Result<Vec<Game>, Error> {
+    pub async fn by_field_round_id<C: GenericClient>(client: &C, field_id: i32, round_id: i32) -> Result<GameList, Error> {
         let stmt = client.prepare("SELECT match_id, field_id, round_id, played, start_datetime, end_datetime FROM matches WHERE field_id = $1 and round_id = $2").await?;
         let rows = client.query(&stmt, &[&field_id, &round_id]).await?;
-        Ok(rows.into_iter().map(Game::from).collect())
+        let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
+        Ok(GameList { games })
     } 
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct GameList {
+    pub games: Vec<Game>,
 }

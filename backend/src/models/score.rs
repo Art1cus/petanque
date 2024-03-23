@@ -21,24 +21,33 @@ impl From<Row> for Score {
 }
 
 impl Score {
-    pub async fn all<C: GenericClient>(client: &C) -> Result<Vec<Score>, Error> {
+    pub async fn all<C: GenericClient>(client: &C) -> Result<ScoreList, Error> {
         let stmt = client.prepare("SELECT result_id, match_id, team_id, score FROM match_results").await?;
         let rows = client.query(&stmt, &[]).await?;
-        Ok(rows.into_iter().map(Score::from).collect())
+        let scores: Vec<Score> = rows.into_iter().map(Score::from).collect();
+        Ok(ScoreList { scores })
     }
-    pub async fn by_match_id<C: GenericClient>(client: &C, match_id: i32) -> Result<Vec<Score>, Error> {
+    pub async fn by_match_id<C: GenericClient>(client: &C, match_id: i32) -> Result<ScoreList, Error> {
         let stmt = client.prepare("SELECT result_id, match_id, team_id, score FROM match_results WHERE match_id = $1").await?;
         let rows = client.query(&stmt, &[&match_id]).await?;
-        Ok(rows.into_iter().map(Score::from).collect())
+        let scores: Vec<Score> = rows.into_iter().map(Score::from).collect();
+        Ok(ScoreList { scores })
     } 
-    pub async fn by_team_id<C: GenericClient>(client: &C, team_id: i32) -> Result<Vec<Score>, Error> {
+    pub async fn by_team_id<C: GenericClient>(client: &C, team_id: i32) -> Result<ScoreList, Error> {
         let stmt = client.prepare("SELECT result_id, match_id, team_id, score FROM match_results WHERE team_id = $1").await?;
         let rows = client.query(&stmt, &[&team_id]).await?;
-        Ok(rows.into_iter().map(Score::from).collect())
+        let scores: Vec<Score> = rows.into_iter().map(Score::from).collect();
+        Ok(ScoreList { scores })
     } 
-    pub async fn by_match_team_id<C: GenericClient>(client: &C, match_id: i32, team_id: i32) -> Result<Vec<Score>, Error> {
+    pub async fn by_match_team_id<C: GenericClient>(client: &C, match_id: i32, team_id: i32) -> Result<ScoreList, Error> {
         let stmt = client.prepare("SELECT result_id, match_id, team_id, score FROM match_results WHERE match_id = $1 and team_id = $2").await?;
         let rows = client.query(&stmt, &[&match_id, &team_id]).await?;
-        Ok(rows.into_iter().map(Score::from).collect())
+        let scores: Vec<Score> = rows.into_iter().map(Score::from).collect();
+        Ok(ScoreList { scores })
     } 
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct ScoreList {
+    pub scores: Vec<Score>,
 }

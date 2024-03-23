@@ -17,14 +17,21 @@ impl From<Row> for Round {
 }
 
 impl Round {
-    pub async fn all<C: GenericClient>(client: &C) -> Result<Vec<Round>, Error> {
+    pub async fn all<C: GenericClient>(client: &C) -> Result<RoundList, Error> {
         let stmt = client.prepare("SELECT round_id, round_name FROM rounds").await?;
         let rows = client.query(&stmt, &[]).await?;
-        Ok(rows.into_iter().map(Round::from).collect())
+        let rounds: Vec<Round> = rows.into_iter().map(Round::from).collect();
+        Ok(RoundList { rounds })
     }
-    pub async fn by_id<C: GenericClient>(client: &C, round_id: i32) -> Result<Vec<Round>, Error> {
+    pub async fn by_id<C: GenericClient>(client: &C, round_id: i32) -> Result<RoundList, Error> {
         let stmt = client.prepare("SELECT round_id, round_name FROM rounds WHERE round_id = $1").await?;
         let rows = client.query(&stmt, &[&round_id]).await?;
-        Ok(rows.into_iter().map(Round::from).collect())
+        let rounds: Vec<Round> = rows.into_iter().map(Round::from).collect();
+        Ok(RoundList { rounds })
     } 
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct RoundList {
+    pub rounds: Vec<Round>,
 }
