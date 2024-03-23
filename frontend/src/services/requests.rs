@@ -1,4 +1,3 @@
-use web_sys::console;
 use dotenv_codegen::dotenv;
 use gloo::storage::{LocalStorage, Storage};
 use lazy_static::lazy_static;
@@ -18,7 +17,6 @@ where
 {
     let allow_body = method == reqwest::Method::POST || method == reqwest::Method::PUT;
     let url = format!("{}{}", API_ROOT, url);
-    console::log_1(&format!("Filter state: {:?}", url).into());
     let mut builder = reqwest::Client::new()
         .request(method, url)
         .header("Content-Type", "application/json");
@@ -30,10 +28,8 @@ where
     let response = builder.send().await;
 
     if let Ok(data) = response {
-        console::log_1(&format!("reqwest data: {:?}", data).into());
         if data.status().is_success() {
             let data: Result<T, _> = data.json::<T>().await;
-            console::log_1(&format!("reqwest data: {:?}", data).into());
             if let Ok(data) = data {
                 log::debug!("Response: {:?}", data);
                 Ok(data)
