@@ -21,14 +21,21 @@ impl From<Row> for Team {
 }
 
 impl Team {
-    pub async fn all<C: GenericClient>(client: &C) -> Result<Vec<Team>, Error> {
+    pub async fn all<C: GenericClient>(client: &C) -> Result<TeamList, Error> {
         let stmt = client.prepare("SELECT team_id, team_name, captain_name, contact_email FROM teams").await?;
         let rows = client.query(&stmt, &[]).await?;
-        Ok(rows.into_iter().map(Team::from).collect())
+        let teams: Vec<Team> = rows.into_iter().map(Team::from).collect();
+        Ok(TeamList { teams })
     }
-    pub async fn by_id<C: GenericClient>(client: &C, team_id: i32) -> Result<Vec<Team>, Error> {
+    pub async fn by_id<C: GenericClient>(client: &C, team_id: i32) -> Result<TeamList, Error> {
         let stmt = client.prepare("SELECT team_id, team_name, captain_name, contact_email FROM teams WHERE team_id = $1").await?;
         let rows = client.query(&stmt, &[&team_id]).await?;
-        Ok(rows.into_iter().map(Team::from).collect())
+        let teams: Vec<Team> = rows.into_iter().map(Team::from).collect();
+        Ok(TeamList { teams })
     } 
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct TeamList {
+    pub teams: Vec<Team>,
 }
