@@ -13,7 +13,7 @@ pub struct Props {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TeamListFilter {
     All,
-    ById(u32),
+    ById(i32),
 }
 
 /// List of teams component
@@ -53,7 +53,7 @@ pub fn team_list(props: &Props) -> Html {
             }
         } else {
             html! {
-                <div class="article-preview">{ "No articles are here... yet." }</div>
+                <div class="article-preview">{ "No teams are here... yet." }</div>
             }
         }
     } else {

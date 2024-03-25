@@ -1,25 +1,20 @@
-use gloo_net::http::{Headers, Request};
-use serde::{Deserialize, Serialize};
-use serde_json::{self, Value};
-use web_sys::HtmlInputElement;
-
 use yew::prelude::*;
 
-use crate::components::team_list::{TeamList, TeamListFilter};
+use crate::components::game_list::{GameList, GameListFilter};
 
 #[function_component(Home)]
 pub fn home() -> Html {
     let filter = use_state(|| {
-            TeamListFilter::All
+            GameListFilter::All
     });
 
-    {
-        let filter = filter.clone();
-    }
-
     html! {
-        <div class="col-md-9 col-xs-12">
-            <TeamList filter={(*filter).clone()} />
+        <div class="home-page">
+            <div class="container page">
+                <div class="col-md-12 col-xs-12 row">
+                    <GameList filter={(*filter).clone()} />
+                </div>
+            </div>
         </div>
     }
 }

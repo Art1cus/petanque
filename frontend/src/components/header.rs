@@ -12,22 +12,19 @@ pub fn header() -> Html {
                 <Link<AppRoute> to={AppRoute::Home} classes="navbar-brand">
                     { "conduit" }
                 </Link<AppRoute>>
-                {
-                    logged_out_view()
-                }
+                <ul class="nav navbar-nav pull-xs-right">
+                    <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::Home} classes="nav-link">
+                            { "Home" }
+                        </Link<AppRoute>>
+                    </li>
+                    <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::TeamView} classes="nav-link">
+                            { "Teams" }
+                        </Link<AppRoute>>
+                    </li>
+                </ul>
             </div>
         </nav>
-    }
-}
-
-fn logged_out_view() -> Html {
-    html! {
-        <ul class="nav navbar-nav pull-xs-right">
-            <li class="nav-item">
-                <Link<AppRoute> to={AppRoute::Home} classes="nav-link">
-                    { "Home" }
-                </Link<AppRoute>>
-            </li>
-        </ul>
     }
 }

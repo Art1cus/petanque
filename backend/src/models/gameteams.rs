@@ -1,0 +1,152 @@
+use serde::{Deserialize, Serialize};
+use tokio_postgres::{Error, GenericClient, Row};
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct GameTeams {
+    pub id: i32,
+    pub field_id: i32,
+    pub round_id: i32,
+    pub played: bool,
+    pub start_time: Option<chrono::NaiveDateTime>,
+    pub end_time: Option<chrono::NaiveDateTime>,
+    pub team_1_id: Option<i32>,
+    pub team_2_id: Option<i32>,
+}
+
+impl From<Row> for GameTeams {
+    fn from(row: Row) -> Self {
+        Self {
+            id: row.get(0),
+            field_id: row.get(1),
+            round_id: row.get(2),
+            played: row.get(3),
+            start_time: row.get(4),
+            end_time: row.get(5),
+            team_1_id: row.get(6),
+            team_2_id: row.get(7),
+        }
+    }
+}
+
+impl GameTeams {
+    pub async fn all<C: GenericClient>(client: &C) -> Result<GameTeamsList, Error> {
+        let stmt = client.prepare("SELECT
+                matches.match_id AS match_id,
+                matches.field_id AS field_id,
+                matches.round_id AS round_id,
+                matches.played AS played,
+                matches.start_datetime AS start_datetime,
+                matches.end_datetime AS end_datetime,
+                match_results1.team_id AS team_1_id,
+                match_results2.team_id AS team_2_id
+            FROM
+                matches
+            JOIN
+                match_results AS match_results1 ON matches.match_id = match_results1.match_id
+            JOIN
+                match_results AS match_results2 ON matches.match_id = match_results2.match_id
+            WHERE
+                match_results1.team_id < match_results2.team_id;").await?;
+        let rows = client.query(&stmt, &[]).await?;
+        let games: Vec<GameTeams> = rows.into_iter().map(GameTeams::from).collect();
+        Ok(GameTeamsList { games })
+    }
+    pub async fn by_field_id<C: GenericClient>(client: &C, field_id: i32) -> Result<GameTeamsList, Error> {
+        let stmt = client.prepare("SELECT
+                matches.match_id AS match_id,
+                matches.field_id AS field_id,
+                matches.round_id AS round_id,
+                matches.played AS played,
+                matches.start_datetime AS start_datetime,
+                matches.end_datetime AS end_datetime,
+                match_results1.team_id AS team_1_id,
+                match_results2.team_id AS team_2_id
+            FROM
+                matches
+            JOIN
+                match_results AS match_results1 ON matches.match_id = match_results1.match_id
+            JOIN
+                match_results AS match_results2 ON matches.match_id = match_results2.match_id
+            WHERE
+                match_results1.team_id < match_results2.team_id
+                AND matches.field_id = $1;").await?;
+        let rows = client.query(&stmt, &[&field_id]).await?;
+        let games: Vec<GameTeams> = rows.into_iter().map(GameTeams::from).collect();
+        Ok(GameTeamsList { games })
+    } 
+    pub async fn by_round_id<C: GenericClient>(client: &C, round_id: i32) -> Result<GameTeamsList, Error> {
+        let stmt = client.prepare("SELECT
+                matches.match_id AS match_id,
+                matches.field_id AS field_id,
+                matches.round_id AS round_id,
+                matches.played AS played,
+                matches.start_datetime AS start_datetime,
+                matches.end_datetime AS end_datetime,
+                match_results1.team_id AS team_1_id,
+                match_results2.team_id AS team_2_id
+            FROM
+                matches
+            JOIN
+                match_results AS match_results1 ON matches.match_id = match_results1.match_id
+            JOIN
+                match_results AS match_results2 ON matches.match_id = match_results2.match_id
+            WHERE
+                match_results1.team_id < match_results2.team_id
+                AND matches.round_id = $1;").await?;
+        let rows = client.query(&stmt, &[&round_id]).await?;
+        let games: Vec<GameTeams> = rows.into_iter().map(GameTeams::from).collect();
+        Ok(GameTeamsList { games })
+    } 
+    pub async fn by_is_played<C: GenericClient>(client: &C, played: bool) -> Result<GameTeamsList, Error> {
+        let stmt = client.prepare("SELECT
+                matches.match_id AS match_id,
+                matches.field_id AS field_id,
+                matches.round_id AS round_id,
+                matches.played AS played,
+                matches.start_datetime AS start_datetime,
+                matches.end_datetime AS end_datetime,
+                match_results1.team_id AS team_1_id,
+                match_results2.team_id AS team_2_id
+            FROM
+                matches
+            JOIN
+                match_results AS match_results1 ON matches.match_id = match_results1.match_id
+            JOIN
+                match_results AS match_results2 ON matches.match_id = match_results2.match_id
+            WHERE
+                match_results1.team_id < match_results2.team_id
+                AND matches.played = $1;").await?;
+        let rows = client.query(&stmt, &[&played]).await?;
+        let games: Vec<GameTeams> = rows.into_iter().map(GameTeams::from).collect();
+        Ok(GameTeamsList { games })
+    } 
+    pub async fn by_field_round_id<C: GenericClient>(client: &C, field_id: i32, round_id: i32) -> Result<GameTeamsList, Error> {
+        let stmt = client.prepare("SELECT
+                matches.match_id AS match_id,
+                matches.field_id AS field_id,
+                matches.round_id AS round_id,
+                matches.played AS played,
+                matches.start_datetime AS start_datetime,
+                matches.end_datetime AS end_datetime,
+                match_results1.team_id AS team_1_id,
+                match_results2.team_id AS team_2_id
+            FROM
+                matches
+            JOIN
+                match_results AS match_results1 ON matches.match_id = match_results1.match_id
+            JOIN
+                match_results AS match_results2 ON matches.match_id = match_results2.match_id
+            WHERE
+                match_results1.team_id < match_results2.team_id
+                AND matches.field_id = $1
+                AND matches.round_id = $2;").await?;
+        let rows = client.query(&stmt, &[&field_id, &round_id]).await?;
+        let games: Vec<GameTeams> = rows.into_iter().map(GameTeams::from).collect();
+        Ok(GameTeamsList { games })
+    } 
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct GameTeamsList {
+    pub games: Vec<GameTeams>,
+}

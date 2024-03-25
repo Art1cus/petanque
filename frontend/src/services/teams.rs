@@ -8,6 +8,6 @@ pub async fn all() -> Result<TeamListInfo, Error> {
 }
 
 /// Get teams filtered by id
-pub async fn by_id(id: u32) -> Result<TeamListInfo, Error> {
+pub async fn by_id(id: i32) -> Result<TeamListInfo, Error> {
     request_get::<TeamListInfo>(format!("/teams/team/{}", id)).await
 }
