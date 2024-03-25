@@ -66,12 +66,10 @@ pub fn score_input(props: &Props) -> Html {
     };
 
     html! {
-        <div class="col-md-6 col-xs-6">
-            <p>{ &team_1_id}</p>
-            <p>{ &team_2_id }</p>
+        <div class="col-md-12 col-xs-12">
             <form {onsubmit}>
-                <fieldset>
-                    <fieldset class="form-group">
+                <fieldset class="row">
+                    <fieldset class="form-group col-md-6 col-xs-12">
                         <input
                             class="form-control form-control-lg"
                             type="number"
@@ -80,7 +78,7 @@ pub fn score_input(props: &Props) -> Html {
                             oninput={oninput_team_1_score}
                             />
                     </fieldset>
-                    <fieldset class="form-group">
+                    <fieldset class="form-group col-md-6 col-xs-12">
                         <input
                             class="form-control form-control-lg"
                             type="number"
@@ -90,7 +88,7 @@ pub fn score_input(props: &Props) -> Html {
                             />
                     </fieldset>
                     <button
-                        class="btn btn-lg btn-primary pull-xs-right"
+                        class="btn btn-lg btn-primary pull-xs-right col-md-12"
                         type="submit"
                         disabled=false>
                         { "Submit Score" }
