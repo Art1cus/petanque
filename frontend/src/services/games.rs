@@ -1,4 +1,4 @@
-use super::{request_delete, request_get, request_post, request_put};
+use super::request_get;
 use crate::error::Error;
 use crate::types::*;
 
@@ -23,6 +23,6 @@ pub async fn by_is_played(is_played: bool) -> Result<GameListInfo, Error> {
 }
 
 /// Get teams filtered by id
-pub async fn by_round_id_field_id(round_id: u32, field_id: i32) -> Result<GameListInfo, Error> {
+pub async fn by_round_id_field_id(round_id: i32, field_id: i32) -> Result<GameListInfo, Error> {
     request_get::<GameListInfo>(format!("/gameteams/field/{}/round/{}", field_id, round_id)).await
 }

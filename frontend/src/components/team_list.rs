@@ -32,12 +32,12 @@ pub fn team_list(props: &Props) -> Html {
 
     {
         let team_list = team_list.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            props.filter.clone(),
             move |_| {
                 team_list.run();
                 || ()
             },
-            props.filter.clone(),
         );
     }
 

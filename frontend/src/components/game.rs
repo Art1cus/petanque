@@ -9,12 +9,14 @@ use super::score_input::ScoreInput;
 #[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub game: GameInfo,
+    pub editable: Option<bool>,
 }
 
 /// Single game preview component used by game list.
 #[function_component(Game)]
 pub fn game_preview(props: &Props) -> Html {
     let game = use_state(|| props.game.clone());
+    let editable = use_state(|| props.editable.clone());
 
     let team_1 = {
         let game = game.clone();
@@ -32,10 +34,36 @@ pub fn game_preview(props: &Props) -> Html {
         )
     };
 
+    {
+        let game = game.clone();
+        let team_1 = team_1.clone();
+        let team_2 = team_2.clone();
+        use_effect_with(
+            props.clone(),
+            move |props| {
+                game.set(props.game.clone());
+                team_1.run();
+                team_2.run();
+            },
+            
+        )
+    }
+
+    {
+        let editable = editable.clone();
+        use_effect_with(
+            props.clone(), 
+            move |props| {
+                editable.set(props.editable.clone())
+            },
+        )
+    }
+
+
     html! {
         <div class="col-md-12 col-xs-12">
             <h3>
-                { &game.start_time }
+                { &game.start_time.to_string() }
             </h3>
             <div class="row"> {
                 if let Some(team_1) = &team_1.data {
@@ -81,7 +109,7 @@ pub fn game_preview(props: &Props) -> Html {
             }
             </div>
             <div>
-                <ScoreInput game_id={game.id.clone()} team_1_id={game.team_1_id.clone()} team_2_id={game.team_2_id.clone()}/>
+                <ScoreInput game={(*game).clone()} editable={editable.unwrap_or(false)}/>
             </div>
         </div>
     }

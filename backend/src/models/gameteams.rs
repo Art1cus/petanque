@@ -10,7 +10,9 @@ pub struct GameTeams {
     pub start_time: Option<chrono::NaiveDateTime>,
     pub end_time: Option<chrono::NaiveDateTime>,
     pub team_1_id: Option<i32>,
+    pub team_1_score: Option<i32>,
     pub team_2_id: Option<i32>,
+    pub team_2_score: Option<i32>,
 }
 
 impl From<Row> for GameTeams {
@@ -23,7 +25,9 @@ impl From<Row> for GameTeams {
             start_time: row.get(4),
             end_time: row.get(5),
             team_1_id: row.get(6),
-            team_2_id: row.get(7),
+            team_1_score: row.get(7),
+            team_2_id: row.get(8),
+            team_2_score: row.get(9),
         }
     }
 }
@@ -38,7 +42,9 @@ impl GameTeams {
                 matches.start_datetime AS start_datetime,
                 matches.end_datetime AS end_datetime,
                 match_results1.team_id AS team_1_id,
-                match_results2.team_id AS team_2_id
+                match_results1.score AS team_1_score,
+                match_results2.team_id AS team_2_id,
+                match_results2.score AS team_2_score
             FROM
                 matches
             JOIN
@@ -46,7 +52,9 @@ impl GameTeams {
             JOIN
                 match_results AS match_results2 ON matches.match_id = match_results2.match_id
             WHERE
-                match_results1.team_id < match_results2.team_id;").await?;
+                match_results1.team_id < match_results2.team_id
+            ORDER BY
+                matches.start_datetime ASC;").await?;
         let rows = client.query(&stmt, &[]).await?;
         let games: Vec<GameTeams> = rows.into_iter().map(GameTeams::from).collect();
         Ok(GameTeamsList { games })
@@ -60,7 +68,9 @@ impl GameTeams {
                 matches.start_datetime AS start_datetime,
                 matches.end_datetime AS end_datetime,
                 match_results1.team_id AS team_1_id,
-                match_results2.team_id AS team_2_id
+                match_results1.score AS team_1_score,
+                match_results2.team_id AS team_2_id,
+                match_results2.score AS team_2_score
             FROM
                 matches
             JOIN
@@ -83,7 +93,9 @@ impl GameTeams {
                 matches.start_datetime AS start_datetime,
                 matches.end_datetime AS end_datetime,
                 match_results1.team_id AS team_1_id,
-                match_results2.team_id AS team_2_id
+                match_results1.score AS team_1_score,
+                match_results2.team_id AS team_2_id,
+                match_results2.score AS team_2_score
             FROM
                 matches
             JOIN
@@ -106,7 +118,9 @@ impl GameTeams {
                 matches.start_datetime AS start_datetime,
                 matches.end_datetime AS end_datetime,
                 match_results1.team_id AS team_1_id,
-                match_results2.team_id AS team_2_id
+                match_results1.score AS team_1_score,
+                match_results2.team_id AS team_2_id,
+                match_results2.score AS team_2_score
             FROM
                 matches
             JOIN
@@ -129,7 +143,9 @@ impl GameTeams {
                 matches.start_datetime AS start_datetime,
                 matches.end_datetime AS end_datetime,
                 match_results1.team_id AS team_1_id,
-                match_results2.team_id AS team_2_id
+                match_results1.score AS team_1_score,
+                match_results2.team_id AS team_2_id,
+                match_results2.score AS team_2_score
             FROM
                 matches
             JOIN

@@ -1,4 +1,4 @@
-use super::{request_delete, request_get, request_post, request_put};
+use super::request_get;
 use crate::error::Error;
 use crate::types::*;
 

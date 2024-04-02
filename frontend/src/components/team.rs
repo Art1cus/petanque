@@ -11,6 +11,17 @@ pub struct Props {
 pub fn team_preview(props: &Props) -> Html {
     let team = use_state(|| props.team.clone());
 
+    {
+        let team = team.clone();
+        use_effect_with(
+            props.clone(),
+            move |props| {
+                team.set(props.team.clone());
+            },
+            
+        )
+    }
+
     html! {
         <div class="col-md-4 col-xs-12">
             <h3>

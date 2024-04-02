@@ -1,18 +1,55 @@
 use yew::prelude::*;
 
 use crate::components::game_list::{GameList, GameListFilter};
+use crate::components::filters::{RoundFilter, FieldFilter};
 
 #[function_component(Home)]
 pub fn home() -> Html {
     let filter = use_state(|| {
-            GameListFilter::All
+        GameListFilter::All
     });
+
+    let round_callback = {
+        let filter = filter.clone();
+        Callback::from(move |id| {
+            filter.set(GameListFilter::ByRoundId(id));
+        })
+    };
+
+    let field_callback = {
+        let filter = filter.clone();
+        Callback::from(move |id| {
+            filter.set(GameListFilter::ByFieldId(id));
+        })
+    };
+
+    let editable = use_state(|| {
+        false
+    });
+
+    let editable_callback = {
+        let editable = editable.clone();
+        Callback::from(move |_| {
+            editable.set(!(*editable).clone())
+        })
+    };
 
     html! {
         <div class="home-page">
             <div class="container page">
                 <div class="col-md-12 col-xs-12 row">
-                    <GameList filter={(*filter).clone()} />
+                    <RoundFilter callback={round_callback}/>
+                    <FieldFilter callback={field_callback}/>
+
+                    <div class="col-md-12 col-xs-12">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" checked={(*editable).clone()} onchange={editable_callback}/>
+                                {"Editable?"}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xs-12 row">
+                    <GameList filter={(*filter).clone()} editable={(*editable).clone()} />
                 </div>
             </div>
         </div>

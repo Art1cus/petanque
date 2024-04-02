@@ -8,11 +8,11 @@ pub struct ScoreInfo {
 }
 
 impl ScoreInfo {
-    pub fn new(team_id: i32, game_id: i32) -> Self {
+    pub fn new(team_id: i32, game_id: i32, score: Option<i32>) -> Self {
         Self {
             team_id,
             game_id,
-            score: 0,
+            score: score.unwrap_or(0),
         }
     }
     pub fn set_score(&mut self, score: i32) {

@@ -3,6 +3,8 @@
 mod teams;
 mod games;
 mod scores;
+mod rounds;
+mod fields;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -10,6 +12,8 @@ use std::collections::HashMap;
 pub use teams::{TeamInfo, TeamInfoWrapper, TeamListInfo};
 pub use games::{GameInfo, GameInfoWrapper, GameListInfo};
 pub use scores::{ScoreInfo,ScoreListInfo};
+pub use rounds::{RoundInfo, RoundInfoWrapper, RoundListInfo};
+pub use fields::{FieldInfo, FieldInfoWrapper, FieldListInfo};
 
 /// Conduit api error info for Unprocessable Entity error
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
