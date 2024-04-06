@@ -1,9 +1,6 @@
 use web_sys::console;
 
 use dotenv_codegen::dotenv;
-use gloo::storage::{LocalStorage, Storage};
-use lazy_static::lazy_static;
-use parking_lot::RwLock;
 use serde::{de::DeserializeOwned, Serialize};
 
 use crate::error::Error;
@@ -32,7 +29,7 @@ where
     if let Ok(data) = response {
         if data.status().is_success() {
             let data: Result<T, _> = data.json::<T>().await;
-            console::log_1(&format!("reqwest data: {:?}", data).into());
+            console::log_1(&format!("reqwest test data: {:?}", data).into());
             if let Ok(data) = data {
                 log::debug!("Response: {:?}", data);
                 Ok(data)

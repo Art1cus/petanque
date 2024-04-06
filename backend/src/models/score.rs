@@ -3,7 +3,7 @@ use tokio_postgres::{Error, GenericClient, Row};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Score {
-    pub id: i32,
+    pub id: Option<i32>,
     pub match_id: i32,
     pub team_id: i32,
     pub score: i32,
@@ -44,6 +44,11 @@ impl Score {
         let rows = client.query(&stmt, &[&match_id, &team_id]).await?;
         let scores: Vec<Score> = rows.into_iter().map(Score::from).collect();
         Ok(ScoreList { scores })
+    } 
+    pub async fn new<C: GenericClient>(client: &C, match_id: i32, team_id: i32, score: i32) -> Result<(), Error> {
+        let stmt = client.prepare("INSERT INTO match_results (match_id, team_id, score) VALUES ($1, $2, $3) ON CONFLICT ON CONSTRAINT match_team_constraint DO UPDATE SET score = $3 WHERE match_results.match_id = $1 AND match_results.team_id = $2").await?;
+        client.execute(&stmt, &[&match_id, &team_id, &score]).await?;
+        Ok(())
     } 
 }
 

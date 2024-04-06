@@ -11,7 +11,7 @@ use std::collections::HashMap;
 
 pub use teams::{TeamInfo, TeamInfoWrapper, TeamListInfo};
 pub use games::{GameInfo, GameInfoWrapper, GameListInfo};
-pub use scores::{ScoreInfo,ScoreListInfo};
+pub use scores::{ScoreInfo, ScoreInfoWrapper, ScoreListInfo};
 pub use rounds::{RoundInfo, RoundInfoWrapper, RoundListInfo};
 pub use fields::{FieldInfo, FieldInfoWrapper, FieldListInfo};
 
@@ -19,6 +19,11 @@ pub use fields::{FieldInfo, FieldInfoWrapper, FieldListInfo};
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct ErrorInfo {
     pub errors: HashMap<String, Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct MessageInfo {
+    pub message: String,
 }
 
 pub type DeleteWrapper = HashMap<(), ()>;

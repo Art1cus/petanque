@@ -1,8 +1,8 @@
-use crate::models::score::Score;
+use crate::models::{score::Score, Message};
 use deadpool_postgres::Pool;
 
 // TODO: check if I can delete this imports if also used somewhere else
-use actix_web::{get, web, HttpResponse};
+use actix_web::{get, put, web, HttpResponse};
 
 #[get("/scores")]
 pub async fn get_scores(pool: web::Data<Pool>) -> HttpResponse {
@@ -91,4 +91,23 @@ pub async fn get_score_by_match_team_id(pool: web::Data<Pool>, path: web::Path<(
         }
     }
 
+}
+
+#[put("/scores/add")]
+pub async fn update_or_insert_score(pool: web::Data<Pool>, score: web::Json<Score>) -> HttpResponse {
+    let client = match pool.get().await {
+        Ok(client) => client,
+        Err(err) => {
+            log::debug!("unable to get postgres client: {:?}", err);
+            return HttpResponse::InternalServerError().json("unable to get postgres client");
+        }
+    };
+    
+    match Score::new(&**client, score.match_id, score.team_id, score.score).await {
+        Ok(_) => HttpResponse::Ok().json(Message{message:"Score updated/inserted successfully".to_string()}),
+        Err(err) => {
+            log::debug!("unable to update score: {:?}", err);
+            HttpResponse::InternalServerError().json(Message{message:"unable to update/insert score".to_string()})
+        }
+    }
 }

@@ -23,7 +23,7 @@ async fn main() -> std::io::Result<()> {
         let cors = Cors::default() // You can customize CORS options here
             .allow_any_header() // Whitelist everything
             .allowed_origin("http://localhost:8080")
-            .allowed_methods(vec!["GET", "POST"]) // Whitelist allowed HTTP methods
+            .allowed_methods(vec!["GET", "POST", "PUT"]) // Whitelist allowed HTTP methods
             .max_age(3600);
 
         App::new()

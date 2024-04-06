@@ -1,17 +1,22 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq, Eq)]
 pub struct ScoreInfo {
     pub team_id: i32,
-    pub game_id: i32,
+    pub match_id: i32,
     pub score: i32,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct ScoreInfoWrapper {
+    pub score: ScoreInfo,
+}
+
 impl ScoreInfo {
-    pub fn new(team_id: i32, game_id: i32, score: Option<i32>) -> Self {
+    pub fn new(team_id: i32, match_id: i32, score: Option<i32>) -> Self {
         Self {
             team_id,
-            game_id,
+            match_id,
             score: score.unwrap_or(0),
         }
     }
