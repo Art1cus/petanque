@@ -18,8 +18,8 @@ pub fn score_input(props: &Props) -> Html {
     let game = use_state(|| props.game.clone());
     let editable = use_state(|| props.editable.clone());
 
-    let score_1 = use_state( || ScoreInfo::new(game.team_1_id, game.id, Some(game.team_1_score)));
-    let score_2 = use_state( || ScoreInfo::new(game.team_2_id, game.id, Some(game.team_2_score)));
+    let score_1 = use_state( || ScoreInfo::new(game.team_1_id, game.id, Some(0)));
+    let score_2 = use_state( || ScoreInfo::new(game.team_2_id, game.id, Some(0)));
 
     {
         let game = game.clone();
@@ -31,8 +31,8 @@ pub fn score_input(props: &Props) -> Html {
             move |props| {
                 game.set(props.game.clone());
                 editable.set(props.editable.clone());
-                score_1.set(ScoreInfo::new(props.game.team_1_id, props.game.id, Some(props.game.team_1_score)));
-                score_2.set(ScoreInfo::new(props.game.team_2_id, props.game.id, Some(props.game.team_2_score)));
+                score_1.set(ScoreInfo::new(props.game.team_1_id, props.game.id, Some(0)));
+                score_2.set(ScoreInfo::new(props.game.team_2_id, props.game.id, Some(0)));
             },
             
         )
