@@ -59,6 +59,11 @@ impl Game {
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })
     } 
+    pub async fn set_played<C: GenericClient>(client: &C, game_id: i32, played: bool) -> Result<(), Error> {
+        let stmt = client.prepare("UPDATE games SET played = $2 WHERE game_id = $1").await?;
+        client.execute(&stmt, &[&game_id, &played]).await?;
+        Ok(())
+    }
 }
 
 #[derive(Deserialize, Serialize, Debug)]

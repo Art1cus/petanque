@@ -2,7 +2,7 @@ use crate::models::game::Game;
 use deadpool_postgres::Pool;
 
 // TODO: check if I can delete this imports if also used somewhere else
-use actix_web::{get, web, HttpResponse};
+use actix_web::{get, post, web, HttpResponse};
 
 #[get("/games")]
 pub async fn get_games(pool: web::Data<Pool>) -> HttpResponse {
@@ -106,6 +106,29 @@ pub async fn get_games_by_field_round_id(pool: web::Data<Pool>, path: web::Path<
         }
     };
     match Game::by_field_round_id(&**client, field_id, round_id).await {
+        Ok(list) => {
+            log::debug!("able to fetch games: {:?}", list);
+            HttpResponse::Ok().json(list)
+        },
+        Err(err) => {
+            log::debug!("unable to fetch games: {:?}", err);
+            return HttpResponse::InternalServerError().json("unable to fetch games");
+        }
+    }
+
+}
+
+#[post("/games/played/game/{game_id}")]
+pub async fn set_played_true(pool: web::Data<Pool>, path: web::Path<i32>) -> HttpResponse {
+    let game_id: i32 = path.into_inner();
+    let client = match pool.get().await {
+        Ok(client) => client,
+        Err(err) => {
+            log::debug!("unable to get postgres client: {:?}", err);
+            return HttpResponse::InternalServerError().json("unable to get postgres client");
+        }
+    };
+    match Game::set_played(&**client, game_id, true).await {
         Ok(list) => {
             log::debug!("able to fetch games: {:?}", list);
             HttpResponse::Ok().json(list)
