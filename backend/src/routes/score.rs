@@ -25,9 +25,9 @@ pub async fn get_scores(pool: web::Data<Pool>) -> HttpResponse {
     }
 }
 
-#[get("/scores/match/{match_id}")]
-pub async fn get_scores_by_match_id(pool: web::Data<Pool>, path: web::Path<i32>) -> HttpResponse {
-    let match_id = path.into_inner();
+#[get("/scores/game/{game_id}")]
+pub async fn get_scores_by_game_id(pool: web::Data<Pool>, path: web::Path<i32>) -> HttpResponse {
+    let game_id = path.into_inner();
     let client = match pool.get().await {
         Ok(client) => client,
         Err(err) => {
@@ -35,7 +35,7 @@ pub async fn get_scores_by_match_id(pool: web::Data<Pool>, path: web::Path<i32>)
             return HttpResponse::InternalServerError().json("unable to get postgres client");
         }
     };
-    match Score::by_match_id(&**client, match_id).await {
+    match Score::by_game_id(&**client, game_id).await {
         Ok(list) => {
             log::debug!("able to fetch scores: {:?}", list);
             HttpResponse::Ok().json(list)
@@ -69,9 +69,9 @@ pub async fn get_scores_by_team_id(pool: web::Data<Pool>, path: web::Path<i32>) 
     }
 }
 
-#[get("/scores/match/{match_id}/team/{team_id}")]
-pub async fn get_score_by_match_team_id(pool: web::Data<Pool>, path: web::Path<(i32, i32)>) -> HttpResponse {
-    let match_id: i32 = path.0;
+#[get("/scores/game/{game_id}/team/{team_id}")]
+pub async fn get_score_by_game_team_id(pool: web::Data<Pool>, path: web::Path<(i32, i32)>) -> HttpResponse {
+    let game_id: i32 = path.0;
     let team_id: i32 = path.1;
     let client = match pool.get().await {
         Ok(client) => client,
@@ -80,7 +80,7 @@ pub async fn get_score_by_match_team_id(pool: web::Data<Pool>, path: web::Path<(
             return HttpResponse::InternalServerError().json("unable to get postgres client");
         }
     };
-    match Score::by_match_team_id(&**client, match_id, team_id).await {
+    match Score::by_game_team_id(&**client, game_id, team_id).await {
         Ok(list) => {
             log::debug!("able to fetch score: {:?}", list);
             HttpResponse::Ok().json(list)
@@ -103,7 +103,7 @@ pub async fn update_or_insert_score(pool: web::Data<Pool>, score: web::Json<Scor
         }
     };
     
-    match Score::new(&**client, score.match_id, score.team_id, score.score).await {
+    match Score::new(&**client, score.game_id, score.team_id, score.score).await {
         Ok(_) => HttpResponse::Ok().json(Message{message:"Score updated/inserted successfully".to_string()}),
         Err(err) => {
             log::debug!("unable to update score: {:?}", err);
