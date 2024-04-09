@@ -38,7 +38,12 @@ pub fn game_list(props: &Props) -> Html {
         })
     };
 
-    
+    let reload_games: Callback<()> = {
+        let game_list = game_list.clone();
+        Callback::from( move |_| {
+            game_list.run();
+        })
+    };
 
     {
         let game_list = game_list.clone();
@@ -66,9 +71,11 @@ pub fn game_list(props: &Props) -> Html {
         if !game_list.games.is_empty() {
             html! {
                 <>
-                    {for game_list.games.iter().map(|game| {
-                        html! { <Game game={game.clone()} editable={*editable.clone()}/> }
-                    })}
+                    {
+                        for game_list.games.iter().map(|game| {
+                        html! { <Game game={game.clone()} editable={*editable.clone()} reload_games={&reload_games}/> }
+                        })
+                    }
                 </>
             }
         } else {

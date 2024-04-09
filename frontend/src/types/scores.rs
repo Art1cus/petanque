@@ -27,7 +27,7 @@ impl ScoreInfo {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct ScoreListInfo {
     pub scores: Vec<ScoreInfo>,
 }

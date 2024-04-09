@@ -1,15 +1,16 @@
 use web_sys::HtmlInputElement;
 
 use yew::prelude::*;
-use yew_hooks::use_async;
+use yew_hooks::prelude::*;
 
-use crate::services::scores::push_scores;
+use crate::services::scores::{by_game_id_team_id, push_scores};
 use crate::types::{GameInfo, ScoreInfo, ScoreListInfo};
 
-#[derive(Properties, Clone, PartialEq, Eq)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub game: GameInfo,
     pub editable: bool,
+    pub reload_games: Callback<()>,
 }
 
 /// Single team preview component used by team list.
@@ -17,22 +18,72 @@ pub struct Props {
 pub fn score_input(props: &Props) -> Html {
     let game = use_state(|| props.game.clone());
     let editable = use_state(|| props.editable.clone());
-
+    
     let score_1 = use_state( || ScoreInfo::new(game.team_1_id, game.id, Some(0)));
     let score_2 = use_state( || ScoreInfo::new(game.team_2_id, game.id, Some(0)));
+
+    let score_1_get = {
+        let game = game.clone();
+        use_async(async move {by_game_id_team_id(game.id, game.team_1_id).await})
+    };
+
+    let score_2_get = {
+        let game = game.clone();
+        use_async(async move {by_game_id_team_id(game.id, game.team_2_id).await})
+    };
+
+    {
+        let score_1_get = score_1_get.clone();
+        use_effect_with(
+            props.clone(),
+            move |_props| {
+                score_1_get.run()
+            },
+        )
+    }
+
+    {
+        let score_1 = score_1.clone();
+        use_effect_with(
+            score_1_get,
+            move |score_1_get| {
+                if let Some(score) = &score_1_get.data {
+                    score_1.set(score.scores[0].clone());
+                }
+            },
+        )
+    }
+
+    {
+        let score_2_get = score_2_get.clone();
+        use_effect_with(
+            props.clone(),
+            move |_props| {
+                score_2_get.run()
+            },
+        )
+    }
+
+    {
+        let score_2 = score_2.clone();
+        use_effect_with(
+            score_2_get,
+            move |score_2_get| {
+                if let Some(score) = &score_2_get.data {
+                    score_2.set(score.scores[0].clone());
+                }
+            },
+        )
+    }
 
     {
         let game = game.clone();
         let editable = editable.clone();
-        let score_1 = score_1.clone();
-        let score_2 = score_2.clone();
         use_effect_with(
             props.clone(),
             move |props| {
                 game.set(props.game.clone());
                 editable.set(props.editable.clone());
-                score_1.set(ScoreInfo::new(props.game.team_1_id, props.game.id, Some(0)));
-                score_2.set(ScoreInfo::new(props.game.team_2_id, props.game.id, Some(0)));
             },
             
         )
@@ -74,9 +125,11 @@ pub fn score_input(props: &Props) -> Html {
 
     let onsubmit = {
         let submit_scores = submit_scores.clone();
+        let reload_games = props.reload_games.clone();
         Callback::from(move |e: SubmitEvent| {
-            e.prevent_default(); /* Prevent event propagation */
+            e.prevent_default();
             submit_scores.run();
+            reload_games.emit(());
         })
     };
 

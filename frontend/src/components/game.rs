@@ -6,10 +6,11 @@ use super::team::Team;
 use super::score_input::ScoreInput;
 
 
-#[derive(Properties, Clone, PartialEq, Eq)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub game: GameInfo,
     pub editable: Option<bool>,
+    pub reload_games: Callback<()>, 
 }
 
 /// Single game preview component used by game list.
@@ -58,7 +59,6 @@ pub fn game_preview(props: &Props) -> Html {
             },
         )
     }
-
 
     html! {
         <div class="col-md-12 col-xs-12">
@@ -109,7 +109,7 @@ pub fn game_preview(props: &Props) -> Html {
             }
             </div>
             <div>
-                <ScoreInput game={(*game).clone()} editable={editable.unwrap_or(false)}/>
+                <ScoreInput game={(*game).clone()} editable={editable.unwrap_or(false)} reload_games={props.reload_games.clone()}/>
             </div>
         </div>
     }
