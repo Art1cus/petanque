@@ -23,7 +23,7 @@ pub fn team_preview(props: &Props) -> Html {
     }
 
     html! {
-        <div class="col-md-4 col-xs-12">
+        <div class="col-md-6 col-xs-12">
             <h3>
                 { &team.name }
             </h3>

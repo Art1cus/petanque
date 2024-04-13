@@ -73,7 +73,7 @@ pub fn game_list(props: &Props) -> Html {
                 <>
                     {
                         for game_list.games.iter().map(|game| {
-                        html! { <Game game={game.clone()} editable={*editable.clone()} reload_games={&reload_games}/> }
+                            html! { <Game game={game.clone()} editable={*editable.clone()} reload_games={&reload_games}/> }
                         })
                     }
                 </>

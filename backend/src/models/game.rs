@@ -30,31 +30,31 @@ impl From<Row> for Game {
 
 impl Game {
     pub async fn all<C: GenericClient>(client: &C) -> Result<GameList, Error> {
-        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games").await?;
+        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games ORDER BY field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })
     }
     pub async fn by_field_id<C: GenericClient>(client: &C, field_id: i32) -> Result<GameList, Error> {
-        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games WHERE field_id = $1").await?;
+        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games WHERE field_id = $1 ORDER BY field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[&field_id]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })
     } 
     pub async fn by_round_id<C: GenericClient>(client: &C, round_id: i32) -> Result<GameList, Error> {
-        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games WHERE round_id = $1").await?;
+        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games WHERE round_id = $1 ORDER BY field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[&round_id]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })
     } 
     pub async fn by_is_played<C: GenericClient>(client: &C, played: bool) -> Result<GameList, Error> {
-        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games WHERE played = $1").await?;
+        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games WHERE played = $1 ORDER BY field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[&played]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })
     } 
     pub async fn by_field_round_id<C: GenericClient>(client: &C, field_id: i32, round_id: i32) -> Result<GameList, Error> {
-        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games WHERE field_id = $1 and round_id = $2").await?;
+        let stmt = client.prepare("SELECT game_id, field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime FROM games WHERE field_id = $1 and round_id = $2 ORDER BY field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[&field_id, &round_id]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })

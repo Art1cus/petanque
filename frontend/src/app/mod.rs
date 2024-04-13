@@ -8,7 +8,7 @@ use yew_router::prelude::*;
 use home::Home;
 use teamview::TeamView;
 
-use crate::components::{header::Header,};
+use crate::components::header::Header;
 
 /// App routes
 #[derive(Routable, Debug, Clone, PartialEq, Eq)]

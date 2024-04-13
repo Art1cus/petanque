@@ -20,11 +20,7 @@ async fn main() -> std::io::Result<()> {
 
     let address = address();
     HttpServer::new(move || {
-        let cors = Cors::default() // You can customize CORS options here
-            .allow_any_header() // Whitelist everything
-            .allow_any_origin()
-            .allowed_methods(vec!["GET", "POST", "PUT"]) // Whitelist allowed HTTP methods
-            .max_age(3600);
+        let cors = Cors::permissive();
 
         App::new()
             .wrap(cors)
