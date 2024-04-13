@@ -44,11 +44,17 @@ pub fn score_input(props: &Props) -> Html {
 
     {
         let score_1 = score_1.clone();
+        let game = game.clone();
         use_effect_with(
             score_1_get,
             move |score_1_get| {
                 if let Some(score) = &score_1_get.data {
-                    score_1.set(score.scores[0].clone());
+                    if !score.scores.is_empty() {
+                        score_1.set(score.scores[0].clone());
+                    }
+                    else {
+                        score_1.set(ScoreInfo::new(game.team_1_id, game.id, Some(0)));
+                    }
                 }
             },
         )
@@ -66,11 +72,17 @@ pub fn score_input(props: &Props) -> Html {
 
     {
         let score_2 = score_2.clone();
+        let game = game.clone();
         use_effect_with(
             score_2_get,
             move |score_2_get| {
                 if let Some(score) = &score_2_get.data {
-                    score_2.set(score.scores[0].clone());
+                    if !score.scores.is_empty() {
+                        score_2.set(score.scores[0].clone());
+                    }
+                    else {
+                        score_2.set(ScoreInfo::new(game.team_2_id, game.id, Some(0)));
+                    }
                 }
             },
         )
@@ -125,11 +137,15 @@ pub fn score_input(props: &Props) -> Html {
 
     let onsubmit = {
         let submit_scores = submit_scores.clone();
-        let reload_games = props.reload_games.clone();
+        // let reload_games = props.reload_games.clone();
+        let game = game.clone();
         Callback::from(move |e: SubmitEvent| {
             e.prevent_default();
             submit_scores.run();
-            reload_games.emit(());
+            let mut _game = (*game).clone();
+            _game.played = true;
+            game.set(_game);
+            // reload_games.emit(());
         })
     };
 

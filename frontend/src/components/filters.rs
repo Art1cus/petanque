@@ -27,7 +27,7 @@ pub fn round_filter(props: &Props) -> Html {
             let target = e.target();
             let option = target.and_then(|t| t.dyn_into::<HtmlSelectElement>().ok());
             if let Some(option) = option {
-                let value: i32 = option.value().parse().unwrap();
+                let value: i32 = option.value().parse().unwrap_or(0);
                 callback.emit(value);
             }
             
@@ -83,7 +83,7 @@ pub fn field_filter(props: &Props) -> Html {
             let target = e.target();
             let option = target.and_then(|t| t.dyn_into::<HtmlSelectElement>().ok());
             if let Some(option) = option {
-                let value: i32 = option.value().parse().unwrap();
+                let value: i32 = option.value().parse().unwrap_or(0);
                 callback.emit(value);
             }
             
