@@ -998,6 +998,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b2a4787296e9989611394c33f193f676704af1686e70b8f8033ab5ba9a35a94"
 
 [[package]]
+name = "petanque-postgres"
+version = "0.1.0"
+dependencies = [
+ "actix-cors",
+ "actix-web",
+ "chrono",
+ "deadpool-postgres",
+ "env_logger",
+ "futures",
+ "log",
+ "serde",
+ "serde_json",
+ "tokio-postgres",
+]
+
+[[package]]
 name = "phf"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1115,22 +1131,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
-]
-
-[[package]]
-name = "react-rust-postgres"
-version = "0.1.0"
-dependencies = [
- "actix-cors",
- "actix-web",
- "chrono",
- "deadpool-postgres",
- "env_logger",
- "futures",
- "log",
- "serde",
- "serde_json",
- "tokio-postgres",
 ]
 
 [[package]]

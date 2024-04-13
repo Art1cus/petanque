@@ -1,0 +1,69 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker compose reference guide at
+# https://docs.docker.com/compose/compose-file/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+services:
+  backend:
+    build:
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      - PG_DBNAME=petanque
+      - PG_HOST=db
+      - PG_USER=postgres
+      - PG_PASSWORD=mysecretpassword
+      - ADDRESS=0.0.0.0:8000
+      - RUST_LOG=debug
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+    restart: always
+    user: postgres
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_DB=example
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+      # PGADMIN_CONFIG_SERVER_POSTGRESQL_1_HOST: db
+      # PGADMIN_CONFIG_SERVER_POSTGRESQL_1_PORT: 5432
+      # PGADMIN_CONFIG_SERVER_POSTGRESQL_1_DBNAME: petanque
+      # PGADMIN_CONFIG_SERVER_POSTGRESQL_1_USER: postgres
+      # PGADMIN_CONFIG_SERVER_POSTGRESQL_1_PASSWORD: mysecretpassword
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+volumes:
+  db-data:
+  pgadmin-data:
+  backend-target-cache:
+  backend-cargo-registry-cache:
+secrets:
+  db-password:
+    file: backend/db/password.txt

@@ -1,5 +1,5 @@
 [package]
-name = "react-rust-postgres"
+name = "petanque-postgres"
 version = "0.1.0"
 authors = ["Jérémie Drouet <jeremie.drouet@gmail.com>"]
 edition = "2018"

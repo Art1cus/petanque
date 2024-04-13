@@ -7,8 +7,8 @@
 ################################################################################
 # Create a stage for building the application.
 
-ARG RUST_VERSION=1.72.1
-ARG APP_NAME=react-rust-postgres
+ARG RUST_VERSION=1.77
+ARG APP_NAME=petanque-postgres
 FROM rust:${RUST_VERSION}-slim-bullseye AS build
 ARG APP_NAME
 WORKDIR /app
@@ -20,16 +20,16 @@ WORKDIR /app
 # Leverage a bind mount to the src directory to avoid having to copy the
 # source code into the container. Once built, copy the executable to an
 # output directory before the cache mounted /app/target is unmounted.
-RUN --mount=type=bind,source=src,target=src \
-    --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
-    --mount=type=bind,source=Cargo.lock,target=Cargo.lock \
-    --mount=type=bind,source=migrations,target=migrations \
+RUN --mount=type=bind,source=./backend/src,target=src \
+    --mount=type=bind,source=./backend/Cargo.toml,target=Cargo.toml \
+    --mount=type=bind,source=./backend/Cargo.lock,target=Cargo.lock \
+    --mount=type=bind,source=./backend/migrations,target=migrations \
     --mount=type=cache,target=/app/target/ \
     --mount=type=cache,target=/usr/local/cargo/registry/ \
     <<EOF
 set -e
 cargo build --locked --release
-cp ./target/release/$APP_NAME /bin/server
+cp ./target/release/$APP_NAME /bin/backend
 EOF
 
 ################################################################################
@@ -59,10 +59,10 @@ RUN adduser \
 USER appuser
 
 # Copy the executable from the "build" stage.
-COPY --from=build /bin/server /bin/
+COPY --from=build /bin/backend /bin/
 
 # Expose the port that the application listens on.
 EXPOSE 8000
 
 # What the container should run when it is started.
-CMD ["/bin/server"]
+CMD ["/bin/backend"]
