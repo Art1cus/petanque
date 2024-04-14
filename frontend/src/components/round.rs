@@ -35,7 +35,7 @@ pub fn round_preview(props: &Props) -> Html {
                     class="btn btn-lg btn-primary"
                     type="submit"
                     disabled={!&round.all_played}>
-                    { "Advance Winners to Next Round" }
+                    { "Advance winners to next round" }
                 </button>
             </div>
         </div>
