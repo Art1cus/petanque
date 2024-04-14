@@ -1,12 +1,14 @@
 //! Routes by yew_router
 pub mod home;
 pub mod teamview;
+pub mod gamesview;
 
 use yew::prelude::*;
 use yew_router::prelude::*;
 
 use home::Home;
 use teamview::TeamView;
+use gamesview::GamesView;
 
 use crate::components::header::Header;
 
@@ -17,6 +19,8 @@ pub enum AppRoute {
     Home,
     #[at("/teamview")]
     TeamView,
+    #[at("/scores")]
+    GamesView,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -25,6 +29,7 @@ pub enum AppRoute {
 pub fn switch(route: AppRoute) -> Html {
     match route {
         AppRoute::Home => html! {<Home />},
+        AppRoute::GamesView => html! {<GamesView />},
         AppRoute::TeamView => html! {<TeamView />},
         AppRoute::NotFound => html! { "Page not found" },
     }

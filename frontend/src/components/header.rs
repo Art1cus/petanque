@@ -19,6 +19,11 @@ pub fn header() -> Html {
                         </Link<AppRoute>>
                     </li>
                     <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::GamesView} classes="nav-link">
+                            { "Scores" }
+                        </Link<AppRoute>>
+                    </li>
+                    <li class="nav-item">
                         <Link<AppRoute> to={AppRoute::TeamView} classes="nav-link">
                             { "Teams" }
                         </Link<AppRoute>>

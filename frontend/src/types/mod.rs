@@ -12,7 +12,7 @@ use std::collections::HashMap;
 pub use teams::{TeamInfo, TeamInfoWrapper, TeamListInfo};
 pub use games::{GameInfo, GameInfoWrapper, GameListInfo};
 pub use scores::{ScoreInfo, ScoreInfoWrapper, ScoreListInfo};
-pub use rounds::{RoundInfo, RoundInfoWrapper, RoundListInfo};
+pub use rounds::{RoundInfo, RoundInfoWrapper, RoundListInfo, RoundExtraInfo, RoundExtraInfoWrapper, RoundExtraListInfo};
 pub use fields::{FieldInfo, FieldInfoWrapper, FieldListInfo};
 
 /// Conduit api error info for Unprocessable Entity error

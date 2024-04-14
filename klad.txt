@@ -1,0 +1,19 @@
+kijk of dat alle spelen in ronde 1 al gespeeld zijn
+
+SELECT
+    r.round_id,
+	r.round_name,
+    COUNT(CASE WHEN g.played = TRUE THEN 1 END) AS played_games,
+	COUNT(g.game_id) AS total_games,
+    CASE
+        WHEN COUNT(g.game_id) = COUNT(CASE WHEN g.played = TRUE THEN 1 END) THEN TRUE
+        ELSE FALSE
+    END AS game_status
+FROM
+    rounds r
+LEFT JOIN
+    games g ON r.round_id = g.round_id
+WHERE
+    r.round_id = 1
+GROUP BY
+    r.round_id;

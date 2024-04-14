@@ -80,7 +80,7 @@ pub fn game_list(props: &Props) -> Html {
             }
         } else {
             html! {
-                <div class="article-preview">{ "No games are here... yet. " }</div>
+                <div class="article-preview">{ "No games are here... yet." }</div>
             }
         }
     } else {

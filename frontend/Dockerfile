@@ -7,35 +7,35 @@
 ################################################################################
 # Create a stage for building the application.
 
-# ARG RUST_VERSION=1.77
-# ARG APP_NAME=petanque-frontend
-# FROM rust:${RUST_VERSION}-slim-bullseye AS build
-# ARG APP_NAME
-# WORKDIR /app
+ARG RUST_VERSION=1.77
+ARG APP_NAME=petanque-frontend
+FROM rust:${RUST_VERSION}-slim-bullseye AS build
+ARG APP_NAME
+WORKDIR /app
 
-# RUN rustup target add wasm32-unknown-unknown
-# RUN cargo install trunk wasm-bindgen-cli
+RUN rustup target add wasm32-unknown-unknown
+RUN cargo install trunk wasm-bindgen-cli
 
-# # Build the application.
-# # Leverage a cache mount to /usr/local/cargo/registry/
-# # for downloaded dependencies and a cache mount to /app/target/ for 
-# # compiled dependencies which will speed up subsequent builds.
-# # Leverage a bind mount to the src directory to avoid having to copy the
-# # source code into the container. Once built, copy the executable to an
-# # output directory before the cache mounted /app/target is unmounted.
-# RUN --mount=type=bind,source=./frontend/src,target=src \
-#     --mount=type=bind,source=./frontend/Cargo.toml,target=Cargo.toml \
-#     --mount=type=bind,source=./frontend/Cargo.lock,target=Cargo.lock \
-#     --mount=type=bind,source=./frontend/index.html,target=index.html \
-#     --mount=type=bind,source=./frontend/style.scss,target=style.scss \
-#     --mount=type=bind,source=.env,target=.env \
-#     --mount=type=cache,target=/app/target/ \
-#     --mount=type=cache,target=/usr/local/cargo/registry/ \
-#     <<EOF
-# set -e
-# trunk build --release
-# cp -r ./dist/ /bin/dist/
-# EOF
+# Build the application.
+# Leverage a cache mount to /usr/local/cargo/registry/
+# for downloaded dependencies and a cache mount to /app/target/ for 
+# compiled dependencies which will speed up subsequent builds.
+# Leverage a bind mount to the src directory to avoid having to copy the
+# source code into the container. Once built, copy the executable to an
+# output directory before the cache mounted /app/target is unmounted.
+RUN --mount=type=bind,source=./frontend/src,target=src \
+    --mount=type=bind,source=./frontend/Cargo.toml,target=Cargo.toml \
+    --mount=type=bind,source=./frontend/Cargo.lock,target=Cargo.lock \
+    --mount=type=bind,source=./frontend/index.html,target=index.html \
+    --mount=type=bind,source=./frontend/style.scss,target=style.scss \
+    --mount=type=bind,source=.env,target=.env \
+    --mount=type=cache,target=/app/target/ \
+    --mount=type=cache,target=/usr/local/cargo/registry/ \
+    <<EOF
+set -e
+trunk build --release
+cp -r ./dist/ /bin/dist/
+EOF
 
 ################################################################################
 # Create a new stage for running the application that contains the minimal
@@ -51,8 +51,8 @@
 FROM httpd:alpine AS final
 
 # Copy the executable from the "build" stage.
-# COPY --from=build /bin/dist/. /usr/local/apache2/htdocs/.
-COPY ./frontend/dist/. /usr/local/apache2/htdocs/.
+COPY --from=build /bin/dist/. /usr/local/apache2/htdocs/.
+# COPY ./frontend/dist/. /usr/local/apache2/htdocs/.
 
 # Expose the port that the application listens on.
 EXPOSE 80
