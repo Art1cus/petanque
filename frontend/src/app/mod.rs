@@ -18,7 +18,9 @@ pub enum AppRoute {
     #[at("/")]
     Home,
     #[at("/teamview")]
-    TeamView,
+    TeamsView,
+    #[at("/rounds")]
+    RoundsView,
     #[at("/scores")]
     GamesView,
     #[not_found]
@@ -28,9 +30,10 @@ pub enum AppRoute {
 
 pub fn switch(route: AppRoute) -> Html {
     match route {
-        AppRoute::Home => html! {<Home />},
+        AppRoute::Home => html! {<GamesView />},
         AppRoute::GamesView => html! {<GamesView />},
-        AppRoute::TeamView => html! {<TeamView />},
+        AppRoute::TeamsView => html! {<TeamView />},
+        AppRoute::RoundsView => html!(<Home />),
         AppRoute::NotFound => html! { "Page not found" },
     }
 }

@@ -36,31 +36,31 @@ pub fn round_filter(props: &Props) -> Html {
 
     html! {
         <div>
-            <select onchange={on_change} name="test" id="test"> 
-            <option value="" selected={true}> </option>
-            {
-                if let Some(round_list) = &round_list.data {
-                    if !round_list.rounds.is_empty() {
-                        html! {
-                            <>
-                                {for round_list.rounds.iter().map(|round| {
-                                    html! { 
-                                        <option value={round.id.to_string()}>{&round.name}</option>
-                                    }
-                                })}
-                            </>
+            <select onchange={on_change} class="custom-select"> 
+                <option value="" selected={true}>{"Alle rondes"}</option>
+                {
+                    if let Some(round_list) = &round_list.data {
+                        if !round_list.rounds.is_empty() {
+                            html! {
+                                <>
+                                    {for round_list.rounds.iter().map(|round| {
+                                        html! { 
+                                            <option value={round.id.to_string()}>{&round.name}</option>
+                                        }
+                                    })}
+                                </>
+                            }
+                        } else {
+                            html! {
+                                <option value="nothing to see here yet"></option>
+                            }
                         }
                     } else {
                         html! {
-                            <option value="nothing to see here yet"></option>
+                            <option value="nothing to see here"></option>
                         }
                     }
-                } else {
-                    html! {
-                        <option value="nothing to see here"></option>
-                    }
                 }
-            }
             </select>
         </div>
     }
@@ -92,31 +92,31 @@ pub fn field_filter(props: &Props) -> Html {
 
     html! {
         <div>
-            <select onchange={on_change} name="test" id="test"> 
-            <option value="" selected={true}> </option>
-            {
-                if let Some(field_list) = &field_list.data {
-                    if !field_list.fields.is_empty() {
-                        html! {
-                            <>
-                                {for field_list.fields.iter().map(|field| {
-                                    html! { 
-                                        <option value={field.id.to_string()}>{&field.name}</option>
-                                    }
-                                })}
-                            </>
+            <select onchange={on_change} class="custom-select"> 
+                <option value="" selected={true}>{"Alle velden"}</option>
+                {
+                    if let Some(field_list) = &field_list.data {
+                        if !field_list.fields.is_empty() {
+                            html! {
+                                <>
+                                    {for field_list.fields.iter().map(|field| {
+                                        html! { 
+                                            <option value={field.id.to_string()}>{&field.name}</option>
+                                        }
+                                    })}
+                                </>
+                            }
+                        } else {
+                            html! {
+                                <option value="nothing to see here yet"></option>
+                            }
                         }
                     } else {
                         html! {
-                            <option value="nothing to see here yet"></option>
+                            <option value="nothing to see here"></option>
                         }
                     }
-                } else {
-                    html! {
-                        <option value="nothing to see here"></option>
-                    }
                 }
-            }
             </select>
         </div>
     }

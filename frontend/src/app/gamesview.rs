@@ -39,16 +39,22 @@ pub fn home() -> Html {
     html! {
         <div class="home-page">
             <div class="container page">
-                <div class="col-md-12 col-xs-12 row">
+                <div class="row" style="margin-bottom: 10px;">
                     <RoundFilter callback={round_callback}/>
                     <FieldFilter callback={field_callback}/>
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" checked={(*editable).clone()} onchange={editable_callback}/>
-                            {"Editable?"}
-                    </label>
                 </div>
                 <div>
                     <GameList filter={(*filter).clone()} editable={(*editable).clone()} />
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="custom-checkbox">
+                            <label>
+                                <input type="checkbox" checked={(*editable).clone()} onchange={editable_callback}/>
+                                {"Edit scores"}
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
