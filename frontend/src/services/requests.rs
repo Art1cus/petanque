@@ -1,4 +1,4 @@
-use web_sys::console;
+// use web_sys::console;
 
 use dotenv_codegen::dotenv;
 use serde::{de::DeserializeOwned, Serialize};
