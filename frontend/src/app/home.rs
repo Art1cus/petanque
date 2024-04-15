@@ -16,29 +16,31 @@ pub fn home() -> Html {
     
     html! {
         <div class="home-page">
-            {
-                if let Some(round_list) = &round_list.data {
-                    if !round_list.rounds.is_empty() {
-                        html! {
-                            <>
-                                {for round_list.rounds.iter().map(|round| {
-                                    html! { 
-                                        <Round round={round.clone()}/>
-                                    }
-                                })}
-                            </>
+            <div class="container page">
+                {
+                    if let Some(round_list) = &round_list.data {
+                        if !round_list.rounds.is_empty() {
+                            html! {
+                                <>
+                                    {for round_list.rounds.iter().map(|round| {
+                                        html! { 
+                                            <Round round={round.clone()}/>
+                                        }
+                                    })}
+                                </>
+                            }
+                        } else {
+                            html! {
+                                <div class="article-preview">{ "No rounds are here... yet." }</div>
+                            }
                         }
                     } else {
                         html! {
-                            <div class="article-preview">{ "No rounds are here... yet." }</div>
+                            <div class="article-preview">{ "Loading..." }</div>
                         }
                     }
-                } else {
-                    html! {
-                        <div class="article-preview">{ "Loading..." }</div>
-                    }
                 }
-            }
+            </div>
         </div>
     }
 }

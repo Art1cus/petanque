@@ -42,15 +42,12 @@ pub fn home() -> Html {
                 <div class="col-md-12 col-xs-12 row">
                     <RoundFilter callback={round_callback}/>
                     <FieldFilter callback={field_callback}/>
-
-                    <div class="col-md-12 col-xs-12">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" checked={(*editable).clone()} onchange={editable_callback}/>
-                                {"Editable?"}
-                        </label>
-                    </div>
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" checked={(*editable).clone()} onchange={editable_callback}/>
+                            {"Editable?"}
+                    </label>
                 </div>
-                <div class="col-md-12 col-xs-12 row">
+                <div>
                     <GameList filter={(*filter).clone()} editable={(*editable).clone()} />
                 </div>
             </div>

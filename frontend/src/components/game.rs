@@ -61,55 +61,57 @@ pub fn game_preview(props: &Props) -> Html {
     }
 
     html! {
-        <div class="col-md-12 col-xs-12">
-            <h3>
-                { &game.start_time.to_string() }
-            </h3>
-            <div class="row"> {
-                if let Some(team_1) = &team_1.data {
-                    if !team_1.teams.is_empty() {
-                        html! {
-                            <>
-                                {for team_1.teams.iter().map(|team| {
-                                    html! { <Team team={team.clone()} /> }
-                                })}
-                            </>
+        <div class="card">
+            <div class="card-body">
+                <h3>
+                    { &game.start_time.to_string() }
+                </h3>
+                <div class="row"> {
+                    if let Some(team_1) = &team_1.data {
+                        if !team_1.teams.is_empty() {
+                            html! {
+                                <>
+                                    {for team_1.teams.iter().map(|team| {
+                                        html! { <Team team={team.clone()} /> }
+                                    })}
+                                </>
+                            }
+                        } else {
+                            html! {
+                                <div class="article-preview">{ "No teams are here... yet." }</div>
+                            }
                         }
                     } else {
                         html! {
-                            <div class="article-preview">{ "No teams are here... yet." }</div>
+                            <div class="article-preview">{ "Loading..." }</div>
                         }
                     }
-                } else {
-                    html! {
-                        <div class="article-preview">{ "Loading..." }</div>
-                    }
                 }
-            }
-            {
-                if let Some(team_2) = &team_2.data {
-                    if !team_2.teams.is_empty() {
-                        html! {
-                            <>
-                                {for team_2.teams.iter().map(|team| {
-                                    html! { <Team team={team.clone()} /> }
-                                })}
-                            </>
+                {
+                    if let Some(team_2) = &team_2.data {
+                        if !team_2.teams.is_empty() {
+                            html! {
+                                <>
+                                    {for team_2.teams.iter().map(|team| {
+                                        html! { <Team team={team.clone()} /> }
+                                    })}
+                                </>
+                            }
+                        } else {
+                            html! {
+                                <div class="article-preview">{ "No teams are here... yet." }</div>
+                            }
                         }
                     } else {
                         html! {
-                            <div class="article-preview">{ "No teams are here... yet." }</div>
+                            <div class="article-preview">{ "Loading..." }</div>
                         }
                     }
-                } else {
-                    html! {
-                        <div class="article-preview">{ "Loading..." }</div>
-                    }
                 }
-            }
-            </div>
-            <div>
-                <ScoreInput game={(*game).clone()} editable={editable.unwrap_or(false)} reload_games={props.reload_games.clone()}/>
+                </div>
+                <div>
+                    <ScoreInput game={(*game).clone()} editable={editable.unwrap_or(false)} reload_games={props.reload_games.clone()}/>
+                </div>
             </div>
         </div>
     }

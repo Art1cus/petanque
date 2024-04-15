@@ -10,7 +10,7 @@ pub fn header() -> Html {
         <nav class="navbar navbar-light">
             <div class="container">
                 <Link<AppRoute> to={AppRoute::Home} classes="navbar-brand">
-                    { "conduit" }
+                    { "Boule App" }
                 </Link<AppRoute>>
                 <ul class="nav navbar-nav pull-xs-right">
                     <li class="nav-item">
