@@ -5,6 +5,7 @@ use yew_hooks::prelude::*;
 
 use crate::services::scores::{by_game_id_team_id, push_scores};
 use crate::types::{GameInfo, ScoreInfo, ScoreListInfo};
+use crate::services::teams;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
@@ -18,6 +19,22 @@ pub struct Props {
 pub fn score_input(props: &Props) -> Html {
     let game = use_state(|| props.game.clone());
     let editable = use_state(|| props.editable.clone());
+
+    let team_1 = {
+        let game = game.clone();
+        use_async_with_options(
+            async move {teams::by_id(game.team_1_id).await},
+            UseAsyncOptions::enable_auto(), 
+        )
+    };
+
+    let team_2 = {
+        let game = game.clone();
+        use_async_with_options(
+            async move {teams::by_id(game.team_2_id).await},
+            UseAsyncOptions::enable_auto(), 
+        )
+    };
     
     let score_1 = use_state( || ScoreInfo::new(game.team_1_id, game.id, Some(0)));
     let score_2 = use_state( || ScoreInfo::new(game.team_2_id, game.id, Some(0)));
@@ -91,11 +108,15 @@ pub fn score_input(props: &Props) -> Html {
     {
         let game = game.clone();
         let editable = editable.clone();
+        let team_1 = team_1.clone();
+        let team_2 = team_2.clone();
         use_effect_with(
             props.clone(),
             move |props| {
                 game.set(props.game.clone());
                 editable.set(props.editable.clone());
+                team_1.run();
+                team_2.run();
             },
             
         )
@@ -153,7 +174,29 @@ pub fn score_input(props: &Props) -> Html {
         <div class="col-md-12 col-xs-12">
             <form {onsubmit}>
                 <fieldset class="row">
-                    <fieldset class="form-group col-md-6 col-xs-12">
+                    <fieldset class="form-group col-md-6 col-xs-12"> {
+                            if let Some(team_1) = &team_1.data {
+                                if !team_1.teams.is_empty() {
+                                    html! {
+                                        <>
+                                            {for team_1.teams.iter().map(|team| {
+                                                html! {
+                                                <h3>{team.name.clone()}</h3>
+                                                }
+                                            })}
+                                        </>
+                                    }
+                                } else {
+                                    html! {
+                                        <div class="article-preview">{ "No teams are here... yet." }</div>
+                                    }
+                                }
+                            } else {
+                                html! {
+                                    <div class="article-preview">{ "Loading..." }</div>
+                                }
+                            }
+                        }
                         <input
                             class="form-control form-control-lg"
                             type="number"
@@ -162,7 +205,29 @@ pub fn score_input(props: &Props) -> Html {
                             disabled={game.played & !*editable}
                             />
                     </fieldset>
-                    <fieldset class="form-group col-md-6 col-xs-12">
+                    <fieldset class="form-group col-md-6 col-xs-12"> {
+                            if let Some(team_2) = &team_2.data {
+                                if !team_2.teams.is_empty() {
+                                    html! {
+                                        <>
+                                            {for team_2.teams.iter().map(|team| {
+                                                html! {
+                                                    <h3>{team.name.clone()}</h3>
+                                                }
+                                            })}
+                                        </>
+                                    }
+                                } else {
+                                    html! {
+                                        <div class="article-preview">{ "No teams are here... yet." }</div>
+                                    }
+                                }
+                            } else {
+                                html! {
+                                    <div class="article-preview">{ "Loading..." }</div>
+                                }
+                            }
+                        }
                         <input
                             class="form-control form-control-lg"
                             type="number"
@@ -172,7 +237,7 @@ pub fn score_input(props: &Props) -> Html {
                             />
                     </fieldset>
                     <button
-                        class="btn btn-lg btn-primary pull-xs-right col-md-12"
+                        class="btn btn-lg btn-primary submit-btn"
                         type="submit"
                         disabled={game.played & !*editable}>
                         { "Submit Score" }
