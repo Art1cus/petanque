@@ -1,5 +1,8 @@
 use yew::prelude::*;
+use yew_hooks::prelude::*;
 use crate::types::RoundExtraInfo;
+
+use crate::services::games::{get_winners_group_fase, get_winners_by_round};
 
 #[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
@@ -22,6 +25,25 @@ pub fn round_preview(props: &Props) -> Html {
         )
     }
 
+    let make_new_rounds = {
+        let round  = round.clone();
+        use_async(async move {
+            if round.id == 1 {
+                get_winners_group_fase().await
+            }
+            else {
+                get_winners_by_round(round.id).await
+            }
+        })
+    };
+
+    let onclick = {
+        Callback::from(move |ev: MouseEvent| {
+            ev.prevent_default();
+            make_new_rounds.run();
+        })
+    };
+
     html! {
         <div class="card round">
             <div class="card-body">
@@ -34,6 +56,7 @@ pub fn round_preview(props: &Props) -> Html {
                 <button
                     class="btn btn-lg btn-primary"
                     type="submit"
+                    onclick={onclick}
                     disabled={!&round.all_played}>
                     { "Advance winners to next round" }
                 </button>

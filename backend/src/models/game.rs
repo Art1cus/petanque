@@ -64,6 +64,21 @@ impl Game {
         client.execute(&stmt, &[&game_id, &played]).await?;
         Ok(())
     }
+    pub async fn new<C: GenericClient>(client: &C, field_id: i32, round_id: i32, team_1_id: i32, team_2_id: i32, played: bool, start_datetime: chrono::NaiveDateTime, end_datetime: chrono::NaiveDateTime) -> Result<(), Error> {
+        let stmt = client.prepare("
+        INSERT INTO games (field_id, round_id, team_1_id, team_2_id, played, start_datetime, end_datetime)
+        SELECT $1, $2, $3, $4, $5, $6, $7
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM games
+            WHERE field_id = $1
+            AND round_id = $2
+            AND (team_1_id = $3 OR team_1_id = $4 OR team_2_id = $3 OR team_2_id = $4)
+        )        
+        ").await?;
+        client.execute(&stmt, &[&field_id, &round_id, &team_1_id, &team_2_id, &played, &start_datetime, &end_datetime]).await?;
+        Ok(())
+    }
 }
 
 #[derive(Deserialize, Serialize, Debug)]

@@ -26,3 +26,13 @@ pub async fn by_is_played(is_played: bool) -> Result<GameListInfo, Error> {
 pub async fn by_round_id_field_id(round_id: i32, field_id: i32) -> Result<GameListInfo, Error> {
     request_get::<GameListInfo>(format!("/games/field/{}/round/{}", field_id, round_id)).await
 }
+
+//// Make new games when the group fase is finished
+pub async fn get_winners_group_fase() -> Result<ScoreListInfo, Error> {
+    request_get::<ScoreListInfo>(format!("/winners/groupfase")).await
+}
+
+//// Make new games when the group fase is finished
+pub async fn get_winners_by_round(round_id: i32) -> Result<ScoreListInfo, Error> {
+    request_get::<ScoreListInfo>(format!("/winners/round/{}", round_id)).await
+}
