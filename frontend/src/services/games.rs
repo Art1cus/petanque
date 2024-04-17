@@ -36,3 +36,8 @@ pub async fn get_winners_group_fase() -> Result<ScoreListInfo, Error> {
 pub async fn get_winners_by_round(round_id: i32) -> Result<ScoreListInfo, Error> {
     request_get::<ScoreListInfo>(format!("/winners/round/{}", round_id)).await
 }
+
+//// Make new games when the group fase is finished
+pub async fn get_losers_by_round(round_id: i32) -> Result<ScoreListInfo, Error> {
+    request_get::<ScoreListInfo>(format!("/losers/round/{}", round_id)).await
+}

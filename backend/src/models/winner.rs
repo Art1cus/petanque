@@ -120,6 +120,41 @@ impl Winner {
         let winners: Vec<Winner> = rows.into_iter().map(Winner::from).collect();
         Ok(Winners { winners })
     }
+
+    pub async fn all_losers_normal_fase<C: GenericClient>(client: &C, round_id: i32) -> Result<Winners, Error> {
+        let stmt = client.prepare("
+            WITH round_games AS (
+                SELECT
+                    g.game_id,
+                    CASE
+                        WHEN gr1.score > gr2.score THEN g.team_2_id
+                        WHEN gr1.score < gr2.score THEN g.team_1_id
+                        ELSE NULL
+                    END AS loser_id
+                FROM
+                    games g
+                JOIN
+                    game_results gr1 ON g.game_id = gr1.game_id AND g.team_1_id = gr1.team_id
+                JOIN
+                    game_results gr2 ON g.game_id = gr2.game_id AND g.team_2_id = gr2.team_id
+                WHERE
+                    g.round_id = (
+                        SELECT round_id
+                        FROM rounds
+                        WHERE round_id = $1
+                    )
+            )
+            SELECT
+                t.group_id AS group_id,
+                rg.loser_id AS team_id
+            FROM
+                round_games rg
+            JOIN
+                teams t ON rg.loser_id = t.team_id").await?;
+        let rows = client.query(&stmt, &[&round_id]).await?;
+        let winners: Vec<Winner> = rows.into_iter().map(Winner::from).collect();
+        Ok(Winners { winners })
+    }
 }
 
 #[derive(Deserialize, Serialize, Debug)]

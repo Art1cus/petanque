@@ -17,3 +17,5 @@ WHERE
     r.round_id = 1
 GROUP BY
     r.round_id;
+
+noip-duc -u 4qfhsjr -p sqiMhgVFAo86 -g all.ddnskey.com --daemonize --check-interval 15m

@@ -2,7 +2,7 @@ use yew::prelude::*;
 use yew_hooks::prelude::*;
 use crate::types::RoundExtraInfo;
 
-use crate::services::games::{get_winners_group_fase, get_winners_by_round};
+use crate::services::games::{get_winners_group_fase, get_winners_by_round, get_losers_by_round};
 
 #[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
@@ -32,7 +32,13 @@ pub fn round_preview(props: &Props) -> Html {
                 get_winners_group_fase().await
             }
             else {
-                get_winners_by_round(round.id).await
+                let winners_result = get_winners_by_round(round.id).await;
+                if round.id == 4 {
+                    get_losers_by_round(round.id).await
+                }
+                else {
+                    winners_result
+                }
             }
         })
     };
