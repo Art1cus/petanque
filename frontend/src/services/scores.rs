@@ -5,7 +5,7 @@ use crate::error::Error;
 use crate::types::*;
 
 pub async fn push_scores(scores: ScoreListInfo) -> Result<(), Error> {
-    console::log_1(&format!("scores data: {:?}", scores).into());
+    console::log_1(&format!("scores  data: {:?}", scores).into());
 
     for score in &scores.scores {
         console::log_1(&format!("score data: {:?}", score).into());
