@@ -5,7 +5,6 @@ use yew_hooks::prelude::*;
 
 use crate::services::scores::{by_game_id_team_id, push_scores};
 use crate::types::{GameInfo, ScoreInfo, ScoreListInfo};
-use crate::services::teams;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
@@ -20,21 +19,6 @@ pub fn score_input(props: &Props) -> Html {
     let game = use_state(|| props.game.clone());
     let editable = use_state(|| props.editable.clone());
 
-    // let team_1 = {
-    //     let game = game.clone();
-    //     use_async_with_options(
-    //         async move {teams::by_id(game.team_1_id).await},
-    //         UseAsyncOptions::enable_auto(), 
-    //     )
-    // };
-
-    // let team_2 = {
-    //     let game = game.clone();
-    //     use_async_with_options(
-    //         async move {teams::by_id(game.team_2_id).await},
-    //         UseAsyncOptions::enable_auto(), 
-    //     )
-    // };
     
     let score_1 = use_state( || ScoreInfo::new(game.team_1_id, game.id, Some(0)));
     let score_2 = use_state( || ScoreInfo::new(game.team_2_id, game.id, Some(0)));
