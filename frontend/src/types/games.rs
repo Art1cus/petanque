@@ -11,6 +11,8 @@ pub struct GameInfo {
     pub played: bool,
     pub start_time: NaiveDateTime,
     pub end_time: NaiveDateTime,
+    pub team_1_name: String,
+    pub team_2_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
