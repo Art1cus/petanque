@@ -78,7 +78,7 @@ VALUES
     ('Achtste finale'),
     ('Kwartfinale'),
     ('Halve finale'),
-    ('Verliezers finale')
+    ('Verliezers finale'),
     ('Finale');
 
 -- Insert sample data into groups table
