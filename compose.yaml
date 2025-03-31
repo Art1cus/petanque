@@ -11,12 +11,24 @@ services:
   frontend:
     build:
       dockerfile: ./frontend/Dockerfile
+      tags:
+        - ghcr.io/art1cus/petanque_frontend:latest
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
     ports:
       - 80:80
 
   backend:
     build:
       dockerfile: ./backend/Dockerfile
+      tags:
+        - ghcr.io/art1cus/petanque_backend:latest
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
     ports:
       - 8000:8000
     environment:
