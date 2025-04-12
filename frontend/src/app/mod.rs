@@ -13,6 +13,7 @@ use gamesview::GamesView;
 use rules::RulesView;
 
 use crate::components::header::Header;
+use crate::components::auth_gate::AuthGate;
 
 /// App routes
 #[derive(Routable, Debug, Clone, PartialEq, Eq)]
@@ -47,9 +48,11 @@ pub fn switch(route: AppRoute) -> Html {
 #[function_component(App)]
 pub fn app() -> Html {
     html! {
-        <HashRouter>
-            <Header />
-            <Switch<AppRoute> render={switch} />
-        </HashRouter>
+        <AuthGate>
+            <HashRouter>
+                <Header />
+                <Switch<AppRoute> render={switch} />
+            </HashRouter>
+        </AuthGate>
     }
 }

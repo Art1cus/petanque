@@ -1,4 +1,4 @@
-use deadpool_postgres::{Config, Pool};
+use deadpool_postgres::{Config, Pool, Runtime};
 use tokio_postgres::NoTls;
 
 fn create_config() -> Config {
@@ -20,6 +20,6 @@ fn create_config() -> Config {
 
 pub fn create_pool() -> Pool {
     create_config()
-        .create_pool(NoTls)
+        .create_pool( Some(Runtime::Tokio1),NoTls)
         .expect("couldn't create postgres pool")
 }

@@ -32,7 +32,7 @@ pub fn home() -> Html {
     let editable_callback = {
         let editable = editable.clone();
         Callback::from(move |_| {
-            editable.set(!(*editable).clone())
+            editable.set(!(*editable).clone()) 
         })
     };
 

@@ -6,7 +6,11 @@ use serde::{de::DeserializeOwned, Serialize};
 use crate::error::Error;
 use crate::types::ErrorInfo;
 
+use reqwest::Client;
+
 const API_ROOT: &str = dotenv!("API_ROOT");
+
+
 
 /// build all kinds of http request: post/get/delete etc.
 pub async fn request<B, T>(method: reqwest::Method, url: String, body: B) -> Result<T, Error>
@@ -16,7 +20,11 @@ where
 {
     let allow_body = method == reqwest::Method::POST || method == reqwest::Method::PUT;
     let url = format!("{}{}", API_ROOT, url);
-    let mut builder = reqwest::Client::new()
+
+    let client = Client::builder()
+        .build().unwrap();
+
+    let mut builder = client
         .request(method, url)
         .header("Content-Type", "application/json");
 

@@ -7,3 +7,5 @@ pub mod game;
 pub mod score_input;
 pub mod filters;
 pub mod round;
+pub mod auth_gate;
+pub mod login;

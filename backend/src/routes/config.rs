@@ -7,6 +7,7 @@ use super::game::{get_games, get_games_by_field_id, get_games_by_round_id, get_g
 use super::score::{get_scores, get_score_by_game_team_id, get_scores_by_game_id, get_scores_by_team_id, update_or_insert_score};
 use super::winners::{get_winners, get_winners_by_round, get_losers_by_round};
 use super::roundextra::get_rounds_w_extrainfo;
+use super::login::{login, check_auth, logout};
 
 pub fn config(conf: &mut web::ServiceConfig) {
     let scope = web::scope("/api")
@@ -30,6 +31,9 @@ pub fn config(conf: &mut web::ServiceConfig) {
         .service(get_winners)
         .service(get_winners_by_round)
         .service(get_losers_by_round)
-        .service(get_rounds_w_extrainfo);
+        .service(get_rounds_w_extrainfo)
+        .service(login)
+        .service(check_auth)
+        .service(logout);
     conf.service(scope);
 }
