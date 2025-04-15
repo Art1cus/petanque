@@ -19,3 +19,8 @@ pub async fn push_scores(scores: ScoreListInfo) -> Result<(), Error> {
 pub async fn by_game_id_team_id(game_id: i32, team_id: i32) -> Result<ScoreListInfo, Error> {
     request_get::<ScoreListInfo>(format!("/scores/game/{}/team/{}", game_id, team_id)).await
 }
+
+/// Get scores by game id
+pub async fn by_game_id(game_id: i32) -> Result<ScoreListInfo, Error> {
+    request_get::<ScoreListInfo>(format!("/scores/game/{}", game_id)).await
+}

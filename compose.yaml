@@ -8,17 +8,17 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
-  # frontend:
-  #   build:
-  #     dockerfile: ./frontend/Dockerfile
-  #     tags:
-  #       - ghcr.io/art1cus/petanque_frontend:latest
-  #     x-bake:
-  #       platforms:
-  #         - linux/amd64
-  #         - linux/arm64
-  #   ports:
-  #     - 80:80
+  frontend:
+    build:
+      dockerfile: ./frontend/Dockerfile
+      tags:
+        - ghcr.io/art1cus/petanque_frontend:latest
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
+    ports:
+      - 80:80
 
   backend:
     build:

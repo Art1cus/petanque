@@ -40,9 +40,9 @@ pub fn game_preview(props: &Props) -> Html {
     html! {
         <div class="card">
             <div class="card-body">
-                <h3 style="border-bottom: 1px solid lightgray;">
-                    {game.start_time.format("%H:%M-").to_string().clone() + &game.end_time.format("%H:%M  %b  %d").to_string()}
-                </h3>
+                <h5 style="border-bottom: 1px solid lightgray;">
+                    {game.start_time.format("%H:%M-").to_string().clone() + &game.end_time.format("%H:%M").to_string()}
+                </h5>
                 <div>
                     <ScoreInput game={(*game).clone()} editable={editable.unwrap_or(false)} reload_games={props.reload_games.clone()}/>
                 </div>

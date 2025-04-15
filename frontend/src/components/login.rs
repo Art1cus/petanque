@@ -2,7 +2,6 @@
 
 use yew::prelude::*;
 use serde::Serialize;
-use gloo_utils;
 use crate::error::Error;
 use crate::services::{request_post, request_get};
 
@@ -39,7 +38,7 @@ pub fn login_view() -> Html {
             match res {
                 Ok(_) => {
                     message.set("Login successful!".to_string());
-                    // gloo_utils::window().location().reload().unwrap(); // trigger AuthGate to recheck
+                    gloo_utils::window().location().reload().unwrap(); // trigger AuthGate to recheck
                 }
                 Err(Error::Unauthorized) => message.set("Invalid password".to_string()),
                 Err(_) => message.set("Something went wrong".to_string()),
@@ -65,7 +64,7 @@ pub fn login_view() -> Html {
             <h2>{ "Please log in" }</h2>
             <input type="password" placeholder="Password" oninput={password_on_input} />
             <button onclick={on_login}>{ "Login" }</button>
-            <p>{ (*check_message_clone).clone()}</p>
+            <p>{ (*message_clone).clone()}</p>
             <button onclick={on_auth_check}>{ "auth_check" }</button>
             <p>{ (*check_message_clone).clone() }</p>
         </div>

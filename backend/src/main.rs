@@ -14,36 +14,36 @@ fn address() -> String {
     std::env::var("ADDRESS").unwrap_or_else(|_| "127.0.0.1:8000".into())
 }
 
+fn session_middleware() -> SessionMiddleware<CookieSessionStore> {
+    SessionMiddleware::builder(
+	    CookieSessionStore::default(), Key::from(&[0; 64])
+    )
+    .cookie_secure(false)
+    .cookie_same_site(SameSite::Lax)
+    .cookie_name("auth".to_string())
+    .cookie_http_only(true)
+	.build() 
+}
+ 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     let pg_pool = postgres::create_pool();
 
-    let address = address();
-
-    let secret_key = Key::generate();
-    
+    let address = address();    
 
     HttpServer::new(move || {
         let cors = Cors::default()
-            .allow_origin("http://localhost:8080") // Your frontend URL
-            .allow_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allow_headers(vec!["Content-Type"])
+            .allow_any_origin()// Your frontend URL
+            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+            .allowed_headers(vec!["Content-Type", "Authorization", "Access-Control-Allow-Credentials"])
+            .expose_headers(vec!["Set-Cookie"])
             .supports_credentials();
-
-        let cookie_store = CookieSessionStore::default();
 
         App::new()
             .wrap(cors)
-            .wrap(SessionMiddleware::builder(
-                    cookie_store,
-                    secret_key.clone(),
-                )
-                .cookie_secure(false)
-                .cookie_same_site(SameSite::Lax)
-                .build()
-            )
+            .wrap(session_middleware())
             .app_data(web::Data::new(pg_pool.clone()))
             .configure(config)    
         })

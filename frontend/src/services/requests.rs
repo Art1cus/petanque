@@ -6,7 +6,7 @@ use serde::{de::DeserializeOwned, Serialize};
 use crate::error::Error;
 use crate::types::ErrorInfo;
 
-use reqwest::Client;
+use reqwest::{Client};
 
 const API_ROOT: &str = dotenv!("API_ROOT");
 
@@ -26,7 +26,9 @@ where
 
     let mut builder = client
         .request(method, url)
-        .header("Content-Type", "application/json");
+        .header("Content-Type", "application/json")
+        .header("Access-Control-Allow-Credentials", "true")
+        .fetch_credentials_include(); 
 
     if allow_body {
         builder = builder.json(&body);
@@ -34,12 +36,15 @@ where
 
     let response = builder.send().await;
 
-    if let Ok(data) = response {
+    if let Ok(data) = response { 
+
         if data.status().is_success() {
             let data: Result<T, _> = data.json::<T>().await;
+            
+            // log::info!("cookies: {:?}", cookies.into());
             // console::log_1(&format!("reqwest test data: {:?}", data).into());
             if let Ok(data) = data {
-                log::debug!("Response: {:?}", data);
+                // log::debug!("Response: {:?}", data);
                 Ok(data)
             } else {
                 Err(Error::DeserializeError)

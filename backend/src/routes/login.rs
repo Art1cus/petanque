@@ -9,7 +9,7 @@ pub struct LoginRequest {
 
 #[post("/login")]
 pub async fn login(info: web::Json<LoginRequest>, session: Session) -> impl Responder {
-    let stored_password = "admin";
+    let stored_password = "RotaLove2025";
 
     if info.password == stored_password {
         session.insert("logged_in", true).unwrap();

@@ -3,7 +3,7 @@ use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_hooks::prelude::*;
 
-use crate::services::scores::{by_game_id_team_id, push_scores};
+use crate::services::scores::{by_game_id, push_scores};
 use crate::types::{GameInfo, ScoreInfo, ScoreListInfo};
 
 #[derive(Properties, Clone, PartialEq)]
@@ -23,66 +23,36 @@ pub fn score_input(props: &Props) -> Html {
     let score_1 = use_state( || ScoreInfo::new(game.team_1_id, game.id, Some(0)));
     let score_2 = use_state( || ScoreInfo::new(game.team_2_id, game.id, Some(0)));
 
-    let score_1_get = {
-        let game = game.clone();
-        use_async(async move {by_game_id_team_id(game.id, game.team_1_id).await})
-    };
 
-    let score_2_get = {
+    let scores_get = {
         let game = game.clone();
-        use_async(async move {by_game_id_team_id(game.id, game.team_2_id).await})
+        use_async(async move {by_game_id(game.id).await})
     };
 
     {
-        let score_1_get = score_1_get.clone();
+        let scores_get = scores_get.clone();
         use_effect_with(
             props.clone(),
             move |_props| {
-                score_1_get.run()
+                scores_get.run()
             },
         )
     }
 
     {
         let score_1 = score_1.clone();
-        let game = game.clone();
-        use_effect_with(
-            score_1_get,
-            move |score_1_get| {
-                if let Some(score) = &score_1_get.data {
-                    if !score.scores.is_empty() {
-                        score_1.set(score.scores[0].clone());
-                    }
-                    else {
-                        score_1.set(ScoreInfo::new(game.team_1_id, game.id, Some(0)));
-                    }
-                }
-            },
-        )
-    }
-
-    {
-        let score_2_get = score_2_get.clone();
-        use_effect_with(
-            props.clone(),
-            move |_props| {
-                score_2_get.run()
-            },
-        )
-    }
-
-    {
         let score_2 = score_2.clone();
         let game = game.clone();
         use_effect_with(
-            score_2_get,
-            move |score_2_get| {
-                if let Some(score) = &score_2_get.data {
-                    if !score.scores.is_empty() {
-                        score_2.set(score.scores[0].clone());
-                    }
-                    else {
-                        score_2.set(ScoreInfo::new(game.team_2_id, game.id, Some(0)));
+            scores_get,
+            move |scores_get| {
+                if let Some(scores) = &scores_get.data {
+                    for score in &scores.scores {
+                        if score.team_id == game.team_1_id {
+                            score_1.set(score.clone());
+                        } else if score.team_id == game.team_2_id {
+                            score_2.set(score.clone());
+                        }
                     }
                 }
             },

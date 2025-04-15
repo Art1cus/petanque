@@ -18,7 +18,7 @@ serde_json = "1.0.94"
 gloo-net= "0.6.0"
 gloo-utils = "0.2.0"
 wasm-bindgen-futures = "0.4"
-reqwest = {version = "0.12.1", features = ["json", "cookies"]}
+reqwest = {version = "0.12.1", features = ["json", "cookies"] }
 lazy_static = "1.4.0"
 gloo = "0.11.0"
 parking_lot = "0.12.1"
