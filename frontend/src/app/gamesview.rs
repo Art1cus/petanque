@@ -44,7 +44,7 @@ pub fn home() -> Html {
                     <FieldFilter callback={field_callback}/>
                 </div>
                 <div>
-                    <GameList filter={(*filter).clone()} editable={(*editable).clone()} />
+                    <GameList filter={(*filter).clone()} editable={(*editable).clone()} show_score={true} />
                 </div>
                 <div class="card">
                     <div class="card-body">

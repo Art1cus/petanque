@@ -1,13 +1,14 @@
 use yew::prelude::*;
 use yew_hooks::prelude::*;
 
-use super::game::Game;
+use super::game::{Game, GameNoInput};
 use crate::services::games;
 
 #[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub filter: GameListFilter,
     pub editable: bool,
+    pub show_score: bool,
 }
 
 /// Filters for team list
@@ -24,6 +25,7 @@ pub enum GameListFilter {
 #[function_component(GameList)]
 pub fn game_list(props: &Props) -> Html {
     let editable = use_state(|| props.editable.clone());
+
     let game_list = {
         let filter = props.filter.clone();
 
@@ -73,7 +75,12 @@ pub fn game_list(props: &Props) -> Html {
                 <>
                     {
                         for game_list.games.iter().map(|game| {
-                            html! { <Game game={game.clone()} editable={*editable.clone()} reload_games={&reload_games}/> }
+                            if props.show_score {
+                                html! { <Game game={game.clone()} editable={*editable.clone()} reload_games={&reload_games}/> }
+                            } else {
+                                html! { <GameNoInput game={game.clone()} editable={*editable.clone()} reload_games={&reload_games}/> }
+                            }
+                           
                         })
                     }
                 </>

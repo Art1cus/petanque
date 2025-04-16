@@ -33,6 +33,11 @@ pub fn header() -> Html {
                             { "Teams" }
                         </Link<AppRoute>>
                     </li>
+                    <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::AnnouncerView} classes="nav-link">
+                            { "Ronde Overzicht" }
+                        </Link<AppRoute>>
+                    </li>
                 </ul>
             </div>
         </nav>

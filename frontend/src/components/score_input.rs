@@ -159,5 +159,5 @@ pub fn score_input(props: &Props) -> Html {
                 </fieldset>
             </form>
         </div>
-    }
+    } 
 }
