@@ -1,5 +1,7 @@
 use web_sys::HtmlInputElement;
 
+use web_sys::console;
+
 use yew::prelude::*;
 use yew_hooks::prelude::*;
 
@@ -72,12 +74,29 @@ pub fn score_input(props: &Props) -> Html {
         )
     }
 
+    {
+        let score_1 = score_1.clone();
+        let score_2 = score_2.clone();
+        let game = game.clone();
+        use_effect_with(
+            game.clone(),
+            move |game| {
+                // Only reset if the game id changed
+                if game.id != score_1.game_id || game.id != score_2.game_id {
+                    score_1.set(ScoreInfo::new(game.team_1_id, game.id, Some(0)));
+                    score_2.set(ScoreInfo::new(game.team_2_id, game.id, Some(0)));
+                }
+            },
+        );
+    }
+
     let submit_scores = {
         let scores = Vec::from([(*score_1).clone(),(*score_2).clone()]);
         use_async(async move {
             let request = ScoreListInfo {
                 scores: scores.clone(),
             };
+            console::log_1(&format!("scores data submit: {:?}", scores).into());
             push_scores(request).await
         })
     };
@@ -108,7 +127,6 @@ pub fn score_input(props: &Props) -> Html {
 
     let onsubmit = {
         let submit_scores = submit_scores.clone();
-        // let reload_games = props.reload_games.clone();
         let game = game.clone();
         Callback::from(move |e: SubmitEvent| {
             e.prevent_default();
@@ -116,7 +134,6 @@ pub fn score_input(props: &Props) -> Html {
             let mut _game = (*game).clone();
             _game.played = true;
             game.set(_game);
-            // reload_games.emit(());
         })
     };
 

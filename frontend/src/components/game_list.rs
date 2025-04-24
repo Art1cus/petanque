@@ -19,6 +19,7 @@ pub enum GameListFilter {
     ByFieldId(i32),
     IsPlayed(bool),
     ByRoundIdFieldId(i32, i32),
+    ByStartTime(String),
 }
 
 /// List of teams component
@@ -36,6 +37,7 @@ pub fn game_list(props: &Props) -> Html {
                 GameListFilter::ByFieldId(id) => games::by_field_id(id).await,
                 GameListFilter::IsPlayed(id) => games::by_is_played(id).await,
                 GameListFilter::ByRoundIdFieldId(round_id, field_id) => games::by_round_id_field_id(round_id, field_id).await,
+                GameListFilter::ByStartTime(start_time) => games::by_start_time(start_time).await,
             }
         })
     };

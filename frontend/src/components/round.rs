@@ -33,7 +33,7 @@ pub fn round_preview(props: &Props) -> Html {
             }
             else {
                 let winners_result = get_winners_by_round(round.id).await;
-                if round.id == 4 {
+                if round.id == 2 {
                     get_losers_by_round(round.id).await
                 }
                 else {

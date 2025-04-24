@@ -41,10 +41,10 @@ pub fn game_preview(props: &Props) -> Html {
         <div class="card">
             <div class="card-body">
                 <h5 style="border-bottom: 1px solid lightgray;">
-                    {game.start_time.format("%H:%M-").to_string().clone() + &game.end_time.format("%H:%M").to_string()}
+                    {game.start_time.format("%H:%M-").to_string().clone() + &game.end_time.format("%H:%M").to_string() + "   -   " + &game.field_name.to_string()}
                 </h5>
                 <div>
-                    <ScoreInput game={(*game).clone()} editable={editable.unwrap_or(false)} reload_games={props.reload_games.clone()}/>
+                    <ScoreInput game={props.game.clone()} editable={editable.unwrap_or(false)} reload_games={&props.reload_games}/>
                 </div>
             </div>
         </div>
@@ -81,7 +81,7 @@ pub fn game_preview(props: &Props) -> Html {
         <div class="card">
             <div class="card-body">
                 <h5 style="border-bottom: 1px solid lightgray;">
-                    {game.start_time.format("%H:%M-").to_string().clone() + &game.end_time.format("%H:%M").to_string()}
+                    {game.start_time.format("%H:%M-").to_string().clone() + &game.end_time.format("%H:%M").to_string() + "   -   " + &game.field_name.to_string()}
                 </h5>
                 <div class="row">
                     <div class="col-auto ml-3">

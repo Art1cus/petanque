@@ -27,6 +27,11 @@ pub async fn by_round_id_field_id(round_id: i32, field_id: i32) -> Result<GameLi
     request_get::<GameListInfo>(format!("/games/field/{}/round/{}", field_id, round_id)).await
 }
 
+/// Get teams filtered by id
+pub async fn by_start_time(start_time: String) -> Result<GameListInfo, Error> {
+    request_get::<GameListInfo>(format!("/games/time/{}", start_time)).await
+}
+
 //// Make new games when the group fase is finished
 pub async fn get_winners_group_fase() -> Result<ScoreListInfo, Error> {
     request_get::<ScoreListInfo>(format!("/winners/groupfase")).await

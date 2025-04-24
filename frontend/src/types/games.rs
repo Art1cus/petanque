@@ -13,6 +13,7 @@ pub struct GameInfo {
     pub end_time: NaiveDateTime,
     pub team_1_name: String,
     pub team_2_name: String,
+    pub field_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]

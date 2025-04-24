@@ -13,6 +13,7 @@ pub struct Game {
     pub end_time: Option<chrono::NaiveDateTime>,
     pub team_1_name: String,
     pub team_2_name: String,
+    pub field_name: String,
 }
 
 impl From<Row> for Game {
@@ -28,6 +29,7 @@ impl From<Row> for Game {
             end_time: row.get(7),
             team_1_name: row.get(8),
             team_2_name: row.get(9),
+            field_name: row.get(10),
         }
     }
 }
@@ -44,13 +46,16 @@ impl Game {
                 g.start_datetime,
                 g.end_datetime,
                 t1.team_name AS team_1_name,
-                t2.team_name AS team_2_name
+                t2.team_name AS team_2_name,
+                f.field_name AS field_name
             FROM 
                 games g
             INNER JOIN 
                 teams t1 ON g.team_1_id = t1.team_id
             INNER JOIN 
                 teams t2 ON g.team_2_id = t2.team_id
+            INNER JOIN 
+                fields f ON g.field_id = f.field_id
             ORDER BY field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
@@ -67,14 +72,17 @@ impl Game {
                 g.start_datetime,
                 g.end_datetime,
                 t1.team_name AS team_1_name,
-                t2.team_name AS team_2_name
+                t2.team_name AS team_2_name,
+                f.field_name AS field_name
             FROM 
                 games g
             INNER JOIN 
                 teams t1 ON g.team_1_id = t1.team_id
             INNER JOIN 
                 teams t2 ON g.team_2_id = t2.team_id
-                WHERE field_id = $1 ORDER BY field_id ASC, start_datetime ASC").await?;
+            INNER JOIN 
+                fields f ON g.field_id = f.field_id
+            WHERE g.field_id = $1 ORDER BY g.field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[&field_id]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })
@@ -90,14 +98,17 @@ impl Game {
                 g.start_datetime,
                 g.end_datetime,
                 t1.team_name AS team_1_name,
-                t2.team_name AS team_2_name
+                t2.team_name AS team_2_name,
+                f.field_name AS field_name
             FROM 
                 games g
             INNER JOIN 
                 teams t1 ON g.team_1_id = t1.team_id
             INNER JOIN 
                 teams t2 ON g.team_2_id = t2.team_id
-            WHERE round_id = $1 ORDER BY field_id ASC, start_datetime ASC").await?;
+            INNER JOIN 
+                fields f ON g.field_id = f.field_id
+            WHERE round_id = $1 ORDER BY g.field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[&round_id]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })
@@ -113,14 +124,17 @@ impl Game {
                 g.start_datetime,
                 g.end_datetime,
                 t1.team_name AS team_1_name,
-                t2.team_name AS team_2_name
+                t2.team_name AS team_2_name,
+                f.field_name AS field_name
             FROM 
                 games g
             INNER JOIN 
                 teams t1 ON g.team_1_id = t1.team_id
             INNER JOIN 
                 teams t2 ON g.team_2_id = t2.team_id
-            WHERE played = $1 ORDER BY field_id ASC, start_datetime ASC").await?;
+            INNER JOIN 
+                fields f ON g.field_id = f.field_id
+            WHERE played = $1 ORDER BY g.field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[&played]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })
@@ -136,15 +150,44 @@ impl Game {
                 g.start_datetime,
                 g.end_datetime,
                 t1.team_name AS team_1_name,
-                t2.team_name AS team_2_name
+                t2.team_name AS team_2_name,
+                f.field_name AS field_name
             FROM 
                 games g
             INNER JOIN 
                 teams t1 ON g.team_1_id = t1.team_id
             INNER JOIN 
                 teams t2 ON g.team_2_id = t2.team_id
-            WHERE field_id = $1 and round_id = $2 ORDER BY field_id ASC, start_datetime ASC").await?;
+            INNER JOIN 
+                fields f ON g.field_id = f.field_id
+            WHERE field_id = $1 and round_id = $2 ORDER BY g.field_id ASC, start_datetime ASC").await?;
         let rows = client.query(&stmt, &[&field_id, &round_id]).await?;
+        let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
+        Ok(GameList { games })
+    }
+    pub async fn by_start_time<C: GenericClient>(client: &C, start_time: chrono::NaiveDateTime) -> Result<GameList, Error> {
+        let stmt = client.prepare("SELECT 
+                g.game_id,
+                g.field_id,
+                g.round_id,
+                g.team_1_id,
+                g.team_2_id,
+                g.played,
+                g.start_datetime,
+                g.end_datetime,
+                t1.team_name AS team_1_name,
+                t2.team_name AS team_2_name,
+                f.field_name AS field_name
+            FROM 
+                games g
+            INNER JOIN 
+                teams t1 ON g.team_1_id = t1.team_id
+            INNER JOIN 
+                teams t2 ON g.team_2_id = t2.team_id
+            INNER JOIN 
+                fields f ON g.field_id = f.field_id
+            WHERE start_datetime = $1 ORDER BY g.field_id ASC").await?;
+        let rows = client.query(&stmt, &[&start_time]).await?;
         let games: Vec<Game> = rows.into_iter().map(Game::from).collect();
         Ok(GameList { games })
     } 

@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 pub struct TeamInfo {
     pub id: i32,
     pub name: String,
-    pub captain_name: String
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]

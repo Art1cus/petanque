@@ -28,7 +28,6 @@ pub fn team_preview(props: &Props) -> Html {
                 <h3>
                     { &team.name }
                 </h3>
-                <p style="margin-bottom: 0px;">{ &team.captain_name }</p>
             </div>
         </div>
     }

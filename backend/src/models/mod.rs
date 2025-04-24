@@ -5,6 +5,7 @@ pub mod score;
 pub mod field;
 pub mod winner;
 pub mod roundextra;
+pub mod start_time;
 
 use serde::{Deserialize, Serialize};
 
