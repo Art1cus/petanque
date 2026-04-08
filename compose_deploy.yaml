@@ -34,7 +34,6 @@ services:
     environment:
       - PG_DBNAME=petanque
       - PG_HOST=db
-      - PG_PORT=5433
       - PG_USER=postgres
       - PG_PASSWORD=mysecretpassword
       - ADDRESS=0.0.0.0:8000
