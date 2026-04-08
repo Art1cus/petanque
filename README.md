@@ -23,3 +23,10 @@ in the main dir remove frontend from compose.yaml
 docker compose build 
 docker compose up -d
 ```
+
+## Deploy on server
+
+```
+docker compose --file compose_deploy.yaml pull
+docker compose --file compose_deploy.yaml up -d
+```
