@@ -16,7 +16,6 @@ services:
         - ghcr.io/art1cus/petanque_frontend:latest
       x-bake:
         platforms:
-          - linux/amd64
           - linux/arm64
     ports:
       - 88:80
@@ -29,13 +28,13 @@ services:
         - ghcr.io/art1cus/petanque_backend:latest
       x-bake:
         platforms:
-          - linux/amd64
           - linux/arm64
     ports:
       - 8000:8000
     environment:
       - PG_DBNAME=petanque
       - PG_HOST=db
+      - PG_PORT=5433
       - PG_USER=postgres
       - PG_PASSWORD=mysecretpassword
       - ADDRESS=0.0.0.0:8000
@@ -56,7 +55,7 @@ services:
       - POSTGRES_DB=example
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     ports:
-      - 5432:5432
+      - 5433:5432
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
