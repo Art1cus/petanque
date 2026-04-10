@@ -9,10 +9,11 @@ pub struct LoginRequest {
 
 #[post("/login")]
 pub async fn login(info: web::Json<LoginRequest>, session: Session) -> impl Responder {
-    let stored_password = "RotaLove2025";
+    let password = &info.password;
+    let expected_password = std::env::var("APP_PASSWORD").unwrap_or_else(|_| "default_password".to_string());
 
-    if info.password == stored_password {
-        session.insert("logged_in", true).unwrap();
+    if password == &expected_password {
+        session.insert("authenticated", true).unwrap();
         HttpResponse::Ok().json("Login successful!")
     } else {
         HttpResponse::Unauthorized().json("Invalid password")

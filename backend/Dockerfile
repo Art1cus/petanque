@@ -9,7 +9,7 @@
 
 ARG RUST_VERSION=1.81
 ARG APP_NAME=petanque-postgres
-FROM rust:${RUST_VERSION}-slim-bullseye AS build
+FROM rust:${RUST_VERSION}-slim-bookworm AS build
 ARG APP_NAME
 WORKDIR /app
 
@@ -20,10 +20,10 @@ WORKDIR /app
 # Leverage a bind mount to the src directory to avoid having to copy the
 # source code into the container. Once built, copy the executable to an
 # output directory before the cache mounted /app/target is unmounted.
-RUN --mount=type=bind,source=./backend/src,target=src \
-    --mount=type=bind,source=./backend/Cargo.toml,target=Cargo.toml \
-    --mount=type=bind,source=./backend/Cargo.lock,target=Cargo.lock \
-    --mount=type=bind,source=./backend/migrations,target=migrations \
+RUN --mount=type=bind,source=./src,target=src \
+    --mount=type=bind,source=./Cargo.toml,target=Cargo.toml \
+    --mount=type=bind,source=./Cargo.lock,target=Cargo.lock \
+    --mount=type=bind,source=./migrations,target=migrations \
     --mount=type=cache,target=/app/target/ \
     --mount=type=cache,target=/usr/local/cargo/registry/ \
     <<EOF
@@ -43,7 +43,7 @@ EOF
 # most recent version of that tag when you build your Dockerfile. If
 # reproducability is important, consider using a digest
 # (e.g., debian@sha256:ac707220fbd7b67fc19b112cee8170b41a9e97f703f588b2cdbbcdcecdd8af57).
-FROM debian:bullseye-slim AS final
+FROM debian:bookworm-slim AS final
 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
