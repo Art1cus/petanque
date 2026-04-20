@@ -24,7 +24,7 @@ impl Winner {
                 gr.team_id,
                 t.group_id,
                 CASE 
-                    WHEN gr.score > COALESCE(gr_opp.score, 0) THEN 2
+                    WHEN gr.score > COALESCE(gr_opp.score, 0) THEN 3
                     WHEN gr.score < COALESCE(gr_opp.score, 0) THEN 0
                     ELSE 1 
                 END AS wins_count,
@@ -64,23 +64,18 @@ impl Winner {
                 team_id,
                 group_id
             ORDER BY
-                team_id
+                total_wins DESC,
+                total_score DESC
         ),
-        group_ranks AS (
-            SELECT
-                group_id,
-                team_id,
-                ROW_NUMBER() OVER (PARTITION BY group_id ORDER BY total_wins DESC, total_score DESC) AS rank
-            FROM
-                group_wins
-        )
         SELECT
             group_id,
             team_id
         FROM
-            group_ranks
-        WHERE
-            rank = 1;").await?;
+            group_wins
+        ORDER BY
+            total_wins DESC,
+            total_score DESC
+        LIMIT 16;").await?;
         let rows = client.query(&stmt, &[]).await?;
         let winners: Vec<Winner> = rows.into_iter().map(Winner::from).collect();
         Ok(Winners { winners })
