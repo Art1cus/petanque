@@ -66,7 +66,7 @@ impl Winner {
             ORDER BY
                 total_wins DESC,
                 total_score DESC
-        ),
+        )
         SELECT
             group_id,
             team_id

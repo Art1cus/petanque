@@ -18,14 +18,14 @@ pub async fn get_winners(pool: web::Data<Pool>) -> HttpResponse {
     match Winner::all_group_fase(&**client).await {
         Ok(list) => {
             log::debug!("able to fetch winners: {:?}", list);
-            let start_datetime = NaiveDateTime::parse_from_str("2024-04-20 17:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+            let start_datetime = NaiveDateTime::parse_from_str("2026-04-25 17:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
             let end_datetime = start_datetime + Duration::minutes(15);
 
             for i in (0..16).step_by(2) {
                 let winner_1 = &list.winners[i];
                 let winner_2 = &list.winners[i+1];
                 let field_id: i32 = (i/2+1).try_into().unwrap();
-                match Game::new(&**client, field_id, 2, winner_1.team_id, winner_2.team_id, false, start_datetime, end_datetime).await {
+                match Game::new(&**client, field_id, 16, winner_1.team_id, winner_2.team_id, false, start_datetime, end_datetime).await {
                     Ok(()) => {
                         log::debug!("able to crate new games from winners: {:?}", list);
                     },

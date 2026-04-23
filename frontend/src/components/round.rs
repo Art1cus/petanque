@@ -28,12 +28,12 @@ pub fn round_preview(props: &Props) -> Html {
     let make_new_rounds = {
         let round  = round.clone();
         use_async(async move {
-            if round.id == 1 {
+            if round.id == 15 {
                 get_winners_group_fase().await
             }
             else {
                 let winners_result = get_winners_by_round(round.id).await;
-                if round.id == 2 {
+                if round.id == 18 {
                     get_losers_by_round(round.id).await
                 }
                 else {
@@ -50,8 +50,10 @@ pub fn round_preview(props: &Props) -> Html {
         })
     };
 
+    let card_class = if round.select_winner { "card round" } else { "card round half-width" };
+
     html! {
-        <div class="card round">
+        <div class={card_class}>
             <div class="card-body">
                 <div class="round-info">
                     <h3>
@@ -59,13 +61,19 @@ pub fn round_preview(props: &Props) -> Html {
                     </h3>
                     <p>{round.played_games.to_string() + "/" + &round.total_games.to_string()}</p>
                 </div>
-                <button
-                    class="btn btn-lg btn-primary"
-                    type="submit"
-                    onclick={onclick}
-                    disabled={!&round.all_played}>
-                    { "Advance winners to next round" }
-                </button>
+                {if round.select_winner {
+                    html! {
+                        <button
+                            class="btn btn-lg btn-primary"
+                            type="submit"
+                            onclick={onclick}
+                            disabled={!&round.all_played}>
+                            { "Advance winners to next round" }
+                        </button>
+                    }
+                } else {
+                    html! {}
+                }}
             </div>
         </div>
     }

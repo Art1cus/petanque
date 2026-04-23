@@ -5,6 +5,7 @@ use tokio_postgres::{Error, GenericClient, Row};
 pub struct Round {
     pub id: i32,
     pub name: String,
+    pub select_winner: bool,
 }
 
 impl From<Row> for Round {
@@ -12,19 +13,20 @@ impl From<Row> for Round {
         Self {
             id: row.get(0),
             name: row.get(1),
+            select_winner: row.get(2),
         }
     }
 }
 
 impl Round {
     pub async fn all<C: GenericClient>(client: &C) -> Result<RoundList, Error> {
-        let stmt = client.prepare("SELECT round_id, round_name FROM rounds").await?;
+        let stmt = client.prepare("SELECT round_id, round_name, select_winner FROM rounds").await?;
         let rows = client.query(&stmt, &[]).await?;
         let rounds: Vec<Round> = rows.into_iter().map(Round::from).collect();
         Ok(RoundList { rounds })
     }
     pub async fn by_id<C: GenericClient>(client: &C, round_id: i32) -> Result<RoundList, Error> {
-        let stmt = client.prepare("SELECT round_id, round_name FROM rounds WHERE round_id = $1").await?;
+        let stmt = client.prepare("SELECT round_id, round_name, select_winner FROM rounds WHERE round_id = $1").await?;
         let rows = client.query(&stmt, &[&round_id]).await?;
         let rounds: Vec<Round> = rows.into_iter().map(Round::from).collect();
         Ok(RoundList { rounds })

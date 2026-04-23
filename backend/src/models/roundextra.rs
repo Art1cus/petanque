@@ -8,6 +8,7 @@ pub struct RoundExtraInfo {
     pub played_games: i32,
     pub total_games: i32,
     pub all_played: bool,
+    pub select_winner: bool,
 }
 
 impl From<Row> for RoundExtraInfo {
@@ -17,7 +18,8 @@ impl From<Row> for RoundExtraInfo {
             name: row.get(1),
             played_games: row.get(2),
             total_games: row.get(3),
-            all_played: row.get(4)
+            all_played: row.get(4),
+            select_winner: row.get(5),
         }
     }
 }
@@ -30,10 +32,21 @@ impl RoundExtraInfo {
             COUNT(CASE WHEN g.played = TRUE THEN 1 END)::INTEGER AS played_games,
             COUNT(g.game_id)::INTEGER AS total_games,
             CASE
-                WHEN COUNT(g.game_id) = 0 THEN FALSE
-                WHEN COUNT(g.game_id) = COUNT(CASE WHEN g.played = TRUE THEN 1 END) THEN TRUE
-                ELSE FALSE
-            END AS game_status
+                WHEN r.round_id <= 15 THEN
+                    -- For group phase rounds (1-15), check if ALL games in the entire group phase are played
+                    CASE
+                        WHEN (SELECT COUNT(game_id) FROM games WHERE round_id <= 15 AND played = FALSE) = 0 THEN TRUE
+                        ELSE FALSE
+                    END
+                ELSE
+                    -- For knockout rounds 16+, check if all games in that specific round are played
+                    CASE
+                        WHEN COUNT(g.game_id) = 0 THEN FALSE
+                        WHEN COUNT(g.game_id) = COUNT(CASE WHEN g.played = TRUE THEN 1 END) THEN TRUE
+                        ELSE FALSE
+                    END
+            END AS game_status,
+            r.select_winner
         FROM
             rounds r
         LEFT JOIN

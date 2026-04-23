@@ -23,6 +23,7 @@ pub struct RoundExtraInfo {
     pub played_games: i32,
     pub total_games: i32,
     pub all_played: bool,
+    pub select_winner: bool,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]

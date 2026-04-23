@@ -95,6 +95,25 @@ main {
   margin-bottom: 10px;
 }
 
+.round.half-width h3{
+    margin: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.round.half-width p{
+    margin: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.round.half-width {
+  width: 48%;
+  display: inline-block;
+  margin-right: 2%;
+  vertical-align: top;
+}
+
 .card {
   position: relative;
   display: block;

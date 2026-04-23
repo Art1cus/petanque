@@ -7,7 +7,7 @@
 ################################################################################
 # Create a stage for building the application.
 
-ARG RUST_VERSION=1.81
+ARG RUST_VERSION=1.88
 ARG APP_NAME=petanque-postgres
 FROM rust:${RUST_VERSION}-slim-bullseye AS build
 ARG APP_NAME
@@ -48,8 +48,14 @@ FROM debian:bullseye-slim AS final
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
 ARG UID=10001
-RUN addgroup -g "${UID}" appuser && \
-    adduser -u "${UID}" -G appuser -D -s /sbin/nologin appuser
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    appuser
 USER appuser
 
 # Copy the executable from the "build" stage.
