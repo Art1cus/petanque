@@ -4,7 +4,8 @@ Fullstack rust web app for a petanque tournament.
 
 # Build and push everything to git hub
 
-`docker buildx bake --push`
+`sudo docker buildx bake --file compose_deploy.yaml --push`
+`docker buildx bake --file compose_deploy.yaml --push`
 
 # Development
 

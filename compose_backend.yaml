@@ -67,3 +67,5 @@ volumes:
 secrets:
   db-password:
     file: backend/db/password.txt
+  app-password:
+    file: backend/db/app_password.txt
